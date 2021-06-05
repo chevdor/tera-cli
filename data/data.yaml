@@ -1,0 +1,7 @@
+title: "Demo"
+users:
+  - username: "Alice"
+    url: "http://example.org/alice"
+
+  - username: "Bob"
+    url: "http://example.org/bob"

@@ -1,0 +1,9 @@
+<title>{% block title %} {{title}} {% endblock title %}</title>
+
+<ul>
+{% for user in users -%}
+    <li><a href="{{ user.url }}">{{ user.username }} 
+    {{ user.username }} likes {% for color in user.fav_colors -%}{{ color }} {% endfor %}
+    </a></li>
+{% endfor %}
+</ul>

@@ -4,14 +4,31 @@ Command line utility for the tera templating engine. You need to provide a templ
 syntax as well as some data (various format are supported)
 
 USAGE:
-    tera [FLAGS] [OPTIONS] --template <template>
+    tera [FLAGS] [OPTIONS] --template <template> [context]
+
+ARGS:
+    <context>    Location of the context data. This file can be of the following type: json |
+                 toml | yaml. If you prefer to pass the data as stdin, use `--stdin`
 
 FLAGS:
-    -e, --env        If true, the current ENV will be appended to the data under the "env" key
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+    -a, --escape               Auto-escape rendered content. This is useful for HTML output
+    -e, --env                  If true, the current ENV will be appended to the data under the
+                               --env-key key
+        --env-first            By default, the context is made of the data you pass and the ENV is
+                               applied afterwards. Setting this option will apply the ENV first.
+                               This is interesting if you prefer your data to override the ENV
+        --env-only             If you want to solely use the ENV as context, you may pass this
+                               option. This will prevent an error about no context being passed to
+                               be raised
+        --fail-on-collision    if you prefer your data to override the ENV
+    -h, --help                 Prints help information
+    -s, --stdin                The context data can be passed using stdin
+    -V, --version              Prints version information
 
 OPTIONS:
-    -d, --data <data>            Location of the data. Can be .json, .toml, .yaml|yml
+        --env-key <env-key>      By default, if --env is set, the environment variables will be
+                                 attached at the root of the context. This is convenient but may end
+                                 up conflicting with your data. To prevent collisions, you can
+                                 provide a custom key with this option
     -o, --out <out>              Optional output file. If not passed, using stdout
     -t, --template <template>    Location of the template

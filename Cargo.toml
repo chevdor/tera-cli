@@ -10,19 +10,20 @@ version = "0.1.0"
 clap = "3.0.0-beta.2"
 env_logger = "0.8.3"
 log = "0.4.14"
+serde = "1.0.126"
 serde_json = {version = "1.0.64", optional = false}
-serde_yaml = {version = "0.8.17", optional = true}
+serde_yaml = {version = "0.8.17", optional = false}
 tera = "1.10.0"
-toml = {version = "0.5.8", optional = true}
+toml = {version = "0.5.8", optional = false}
 
 [dev-dependencies]
 assert_cmd = "1.0.5"
 
-[features]
-default = ["with_json"]
-with_json = []
-with_toml = ["toml"]
-with_yaml = ["serde_yaml"]
+# [features]
+# default = ["with_json"]
+# with_json = []
+# with_toml = ["toml"]
+# with_yaml = ["serde_yaml"]
 
 [[bin]]
 name = "tera"

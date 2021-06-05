@@ -1,0 +1,26 @@
+{#- This sample template generates a markdown document for the metadata V12 from the Polkadot project #}
+{#- It makes it an interesting benchmark as the data can be quite big (~385Kb / 12k lines) #}
+{#- You may grab the latest json data using subwasm on github and running the following command: # }
+{#- subwasm -j meta --chain polkadot > /tmp/meta.json #}
+
+{%- if V12 -%}
+{%- set version = "V12" -%}
+{%- endif -%}
+
+# Metadata version {{ version }}
+
+This document has been generated using tera and tera-cli from https://github.com/chevdor/tera.
+
+Numbrer of modules: {{ V12.modules | length }}
+
+{% for module in V12.modules | sort(attribute="index") -%}
+## {{module.index}}: {{module.name}}
+{%- if module.calls -%}
+{% for c in module.calls %}
+- {{c.name}}
+{%- endfor %}
+{% else %}
+no call
+{%- endif %}
+
+{% endfor %}
