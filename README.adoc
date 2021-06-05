@@ -1,0 +1,10 @@
+= Tera cli
+:toc: right
+
+== Install
+
+    cargo install --git https://github.com/chevdor/tera-cli
+
+== Usage
+
+include::doc/usage.adoc[]

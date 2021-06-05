@@ -1,0 +1,17 @@
+tera-cli 0.1.0
+chevdor <chevdor@gmail.com>
+Command line utility for the tera templating engine. You need to provide a template using the tera
+syntax as well as some data (various format are supported)
+
+USAGE:
+    tera [FLAGS] [OPTIONS] --template <template>
+
+FLAGS:
+    -e, --env        If true, the current ENV will be appended to the data under the "env" key
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -d, --data <data>            Location of the data. Can be .json, .toml, .yaml|yml
+    -o, --out <out>              Optional output file. If not passed, using stdout
+    -t, --template <template>    Location of the template
