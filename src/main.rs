@@ -2,12 +2,12 @@ mod opts;
 mod template;
 mod wrapped_context;
 
-use std::{fs::File, io::Write};
 use crate::template::Template;
 use clap::{crate_name, crate_version, Clap};
 use env_logger::Env;
 use log::{debug, info, trace};
 use opts::*;
+use std::{fs::File, io::Write};
 use tera::{Context, Tera};
 
 fn main() -> Result<(), String> {

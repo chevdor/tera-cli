@@ -12,11 +12,13 @@ Here is a basic example. For instance, you will pass data such as:
         "users": [
             {
                 "username": "Alice",
-                "url": "http://example.org/alice"
+                "url": "http://example.org/alice",
+                "fav_colors": ["red", "green", "yellow"]
             },
             {
                 "username": "Bob",
-                "url": "http://example.org/bob"
+                "url": "http://example.org/bob",
+                "fav_colors": ["orange"]
             }
         ]
     }
@@ -27,7 +29,10 @@ as well as a template such as:
     <title>{% block title %} {{title}} {% endblock title %}</title>
 
     <ul>
-    {% for user in users %}  <li><a href="{{ user.url }}">{{ user.username }}</a></li>
+    {% for user in users -%}
+        <li><a href="{{ user.url }}">{{ user.username }} 
+        {{ user.username }} likes {% for color in user.fav_colors -%}{{ color }} {% endfor %}
+        </a></li>
     {% endfor %}
     </ul>
 
@@ -61,6 +66,18 @@ The **tera** engine allows way more than the simple replacements shown above. Yo
 ## Install
 
     cargo install --git https://github.com/chevdor/tera-cli
+
+## What can I do with that anyway ?
+
+Well…​ if you have **data** and you want to format them, this tool will likely be a great companion.
+
+-   You may generate beautiful changelogs in markdown, asciidoc, restructured text, etc…​
+
+-   You may generate some more human views of your data
+
+-   You may…​ make a blog with that…​
+
+-   You may generate k8s config files…​.
 
 ## Features
 
