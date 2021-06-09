@@ -30,7 +30,10 @@ Numbrer of modules: {{ root.modules | length }}
 {% for c in module.calls %}
 ### {{loop.index -1 }}: {{c.name}}
 
+{% if DOC == "true" -%}
 {{c.documentation}}
+{%- endif %}
+
 {% endfor %}
 </details>
 

@@ -1,5 +1,7 @@
 # Tera cli
 
+![tera cli logo 256](resources/logo/tera-cli-logo_256.png)
+
 [tera](https://github.com/Keats/tera) is a template engine written in Rust and inspired by Jinja2. It allows merging some data called `context data` into a template and produces a new output.
 
 This project is a command line for the [tera template engine](https://github.com/Keats/tera). This project is called `tera-cli` but the command installed on your system is simply `tera`.
