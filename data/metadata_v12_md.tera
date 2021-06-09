@@ -5,22 +5,38 @@
 
 {%- if V12 -%}
 {%- set version = "V12" -%}
+{%- set root = V12 -%}
+{%- endif -%}
+
+{%- if V13 -%}
+{%- set version = "V13" -%}
+{%- set root = V13 -%}
 {%- endif -%}
 
 # Metadata version {{ version }}
 
 This document has been generated using tera and tera-cli from https://github.com/chevdor/tera.
 
-Numbrer of modules: {{ V12.modules | length }}
+Numbrer of modules: {{ root.modules | length }}
 
-{% for module in V12.modules | sort(attribute="index") -%}
+{% for module in root.modules | sort(attribute="index") -%}
+
+----
 ## {{module.index}}: {{module.name}}
-{%- if module.calls -%}
+
+{%- if module.calls %}
+<details>
+<summary>Calls: {{ module.calls | length }} 🤙🏼</summary>
 {% for c in module.calls %}
-- {{c.name}}
-{%- endfor %}
+### {{loop.index -1 }}: {{c.name}}
+
+{{c.documentation}}
+{% endfor %}
+</details>
+
 {% else %}
 no call
 {%- endif %}
 
 {% endfor %}
+
