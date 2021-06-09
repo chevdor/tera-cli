@@ -7,7 +7,7 @@
 == Intro
 image::resources/logo/tera-cli-logo_256.png[width=256px, align=center]
 
-https://github.com/Keats/tera[tera] is a template engine written in Rust and inspired by Jinja2. It allows merging some data called `context data` into a template and produces a new output. This project, `tera-cli`, is a command line for the https://github.com/Keats/tera[tera template engine]. 
+https://github.com/Keats/tera[tera] is a template engine written in Rust and inspired by Jinja2. It allows merging some data called `context data` into a template and produces a new output. This project, `tera-cli`, is a command line for the https://github.com/Keats/tera[tera template engine].
 
 This project is called `tera-cli` but the command installed on your system is simply `tera`.
 
@@ -20,17 +20,17 @@ Here is a basic example. For instance, you will pass data such as:
 
 ----
 .data.json:
-include::data/data.json[]
+include::data/basic/basic.json[]
 ----
 
 as well as a template such as:
 
 ----
 .template.tmpl
-include::data/template.tmpl[]
+include::data/basic/basic.tera[]
 ----
 
-and a call such as `tera --template data/template.tmpl data/data.json` will produce:
+and a call such as `tera --template template.tera data.json` will produce:
 ----
 .result
 <title> Demo </title>

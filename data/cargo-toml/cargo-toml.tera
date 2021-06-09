@@ -1,0 +1,23 @@
+# {{ package.name }} from {{ package.authors.0 }}
+
+This document is automatically generated from the Cargo.toml of the project.
+
+## Package information
+
+Here are some details about the package:
+
+{% for k, v in package -%}
+- {{k}}: {{v}}
+{% endfor%}
+
+## Binaries
+
+{% for o in bin -%}
+- {{o.name}}: {{o.path}}
+{% endfor%}
+
+## Dependencies
+
+{% for k, v in dependencies -%}
+- {{k}}: {{v}}
+{% endfor%}

@@ -1,0 +1,10 @@
+{% if env | length > 0%}
+LOOKING GOOD, we can see {{ env | length }} ENV variables, here is the list:
+
+{% for key, value in env -%}
+- {{ key }}={{ value }}
+{% endfor %}
+
+{% else %}
+Uh Oh Nooo !
+{% endif %}

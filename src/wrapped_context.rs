@@ -94,7 +94,7 @@ impl WrappedContext {
 	}
 
 	pub fn create_context(&mut self) {
-		if self.opts.env && self.opts.env_first {
+		if (self.opts.env || self.opts.env_only) && self.opts.env_first {
 			info!("Appending env to context first, env-key: {:?}", self.opts.env_key);
 			self.append_env();
 		}
@@ -117,7 +117,7 @@ impl WrappedContext {
 			// 	_ => {}
 			// }
 			self.append_json(&input);
-		} else {
+		} else if self.opts.context.is_some() {
 			// here we know that we have a Path since --stdin is not passed
 			let context_file = self.opts.context.as_ref().unwrap();
 			let input = fs::read_to_string(context_file).unwrap();
@@ -132,7 +132,7 @@ impl WrappedContext {
 			};
 		};
 
-		if self.opts.env && !self.opts.env_first {
+		if (self.opts.env || self.opts.env_only) && !self.opts.env_first {
 			info!("Appending env to context, env-key: {:?}", self.opts.env_key);
 			self.append_env();
 		}

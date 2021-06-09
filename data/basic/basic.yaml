@@ -2,6 +2,12 @@ title: "Demo"
 users:
   - username: "Alice"
     url: "http://example.org/alice"
+    fav_colors:
+      - red
+      - green
+      - yellow
 
   - username: "Bob"
     url: "http://example.org/bob"
+    fav_colors:
+      - orange

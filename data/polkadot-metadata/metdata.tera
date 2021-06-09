@@ -13,6 +13,10 @@
 {%- set root = V13 -%}
 {%- endif -%}
 
+{%- if not DOC -%}
+{%- set DOC = "false" -%}
+{%- endif -%}
+
 # Metadata version {{ version }}
 
 This document has been generated using tera and tera-cli from https://github.com/chevdor/tera.
