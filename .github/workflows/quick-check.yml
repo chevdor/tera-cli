@@ -3,7 +3,9 @@
 name: Quick check
 
 on:
-  push
+  push:
+    tags-ignore:
+      - v*
 
 jobs:
   quick_check:

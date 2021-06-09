@@ -3,6 +3,9 @@ authors = ["chevdor <chevdor@gmail.com>"]
 edition = "2018"
 name = "tera-cli"
 version = "0.1.0"
+description = "A command line utility written in Rust to render templates from json|toml|yaml && ENV, using the tera templating engine"
+readme = "README.md"
+license = "MIT"
 
 [dependencies]
 clap = "3.0.0-beta.2"
