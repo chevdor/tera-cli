@@ -1,0 +1,7 @@
+name: Tera
+site: https://github.com
+repo: chevdor/tera-cli
+archive: "{{ name }}-mac-v1.2.3.tar.gz"
+description: A command line utility written in Rust to render templates using the tera templating engine
+version: 1.2.3
+sha256: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b

@@ -1,0 +1,9 @@
+You may test your template/data with:
+
+    c watch -i Formula/tera.rb -s "tera -t Formula/template.tera Formula/data.yaml -o Formula/tera.rb"
+
+and render with:
+
+    tera -t Formula/template.tera Formula/data.yaml -o Formula/tera.rb
+
+NOTE: The template covers a few default values so you don't need to pass everything.
