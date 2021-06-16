@@ -31,7 +31,7 @@ impl WrappedContext {
 	pub fn append_json(&mut self, str: &str) {
 		debug!("Appending json");
 		let json = str.parse::<serde_json::Value>().expect("Parse json");
-		let object = json.as_object().unwrap();
+		let object = json.as_object().expect("Json object expected");
 
 		for (k, v) in object.iter() {
 			self.handle_collision("json", k, v);
