@@ -27,7 +27,6 @@ fn main() -> Result<(), String> {
 	wrapped_context.create_context();
 
 	let context: &Context = wrapped_context.context();
-	// let context: Context = get_context(opts.context, opts.env, opts.env_key.as_deref()).unwrap();
 	trace!("context:\n{:#?}", context);
 
 	let rendered = Tera::one_off(&template, &context, autoescape).unwrap();

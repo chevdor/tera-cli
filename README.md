@@ -1,8 +1,16 @@
-# Tera cli
+# tera-cli
 
-[tera](https://github.com/Keats/tera) is a template engine written in Rust and inspired by Jinja2. It allows merging some data called `context data` into a template and produces a new output.
+## Intro
 
-This project is a command line for the [tera template engine](https://github.com/Keats/tera). This project is called `tera-cli` but the command installed on your system is simply `tera`.
+![tera cli logo 256](resources/logo/tera-cli-logo_256.png)
+
+[tera](https://github.com/Keats/tera) is a template engine written in Rust and inspired by Jinja2. It allows merging some data called `context data` into a template and produces a new output. This project, `tera-cli`, is a command line for the [tera template engine](https://github.com/Keats/tera).
+
+This project is called `tera-cli` but the command installed on your system is simply `tera`.
+
+`tera-ci` offers powerful features related to your environment variables, allowing you to control the output **both** from the context data you pass but also from the ENV variables set on your system.
+
+## Example
 
 Here is a basic example. For instance, you will pass data such as:
 
@@ -30,13 +38,13 @@ as well as a template such as:
 
     <ul>
     {% for user in users -%}
-        <li><a href="{{ user.url }}">{{ user.username }} 
+        <li><a href="{{ user.url }}">{{ user.username }}
         {{ user.username }} likes {% for color in user.fav_colors -%}{{ color }} {% endfor %}
         </a></li>
     {% endfor %}
     </ul>
 
-and a call such as `tera --template data/template.tmpl data/data.json` will produce:
+and a call such as `tera --template template.tera data.json` will produce:
 
     .result
     <title> Demo </title>

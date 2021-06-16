@@ -27,7 +27,7 @@ pub struct Opts {
 	/// By default, if --env is set, the environment variables will be attached at the root of the context.
 	/// This is convenient but may end up conflicting with your data. To prevent collisions, you can provide
 	/// a custom key with this option.
-	#[clap(long, requires = "env")]
+	#[clap(long)]
 	pub env_key: Option<String>,
 
 	/// By default, the context is made of the data you pass and the ENV is applied
@@ -42,7 +42,7 @@ pub struct Opts {
 	/// If you want to solely use the ENV as context, you may pass
 	/// this option. This will prevent an error about no context being passed
 	/// to be raised.
-	#[clap(long, requires = "env")]
+	#[clap(long)]
 	pub env_only: bool,
 
 	/// Optional output file. If not passed, using stdout.
