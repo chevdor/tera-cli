@@ -6,27 +6,6 @@ on:
       - "v*"
 
 jobs:
-  # setup:
-  #   runs-on: ubuntu-latest
-  #   outputs:
-  #     tag: ${{ steps.get-refs.outputs.tag }}
-  #     version: ${{ steps.get-refs.outputs.version }}
-  #   steps:
-  #     - uses: actions/checkout@v2
-
-  #     - name: Extract refs
-  #       id: get-refs
-  #       run: |
-  #         echo GITHUB_REF=$GITHUB_REF
-  #         TAG=${GITHUB_REF/refs\/tags\//}
-  #         # VERSION=${GITHUB_REF#refs/*/}
-  #         VERSION=${GITHUB_REF/refs\/tags\/v/}
-  #         echo ::debug::setup TAG: $TAG
-  #         echo ::debug::setup VERSION: $VERSION
-
-  #         echo "::set-output name=tag::$TAG"
-  #         echo "::set-output name=version::$VERSION"
-
   linux:
     env:
       TARGET_DIR: target/release
@@ -72,6 +51,13 @@ jobs:
           echo "SHORT_SHA=${GITHUB_SHA::8}" >> $GITHUB_ENV
       - uses: actions/download-artifact@v2
 
+      - name: Install tera v0.1.0
+        run: |
+          URL=https://github.com/chevdor/tera-cli/releases/download/v0.1.0-ae9bc49c/tera-cli_linux_amd64.deb
+          wget $URL
+          sudo dpkg -i tera-cli_linux_amd64.deb
+          tera --version
+
       - name: Generate changelog
         id: change_log
         run: |
@@ -82,28 +68,23 @@ jobs:
             perl -pe 's/},]/}]/')
           echo "::set-output name=changes::$JSON"
 
-      - name: Create Draft Release
+      - name: Render release notes
+        run: |
+          export DEBIAN_URL="https://github.com/chevdor/tera-cli/releases/download/${{ env.RELEASE_VERSION }}/linux/tera-cli_linux_amd64.deb"
+          export CHANGELOG="${{ steps.change_log.outputs.changes }}"
+          export RELEASE_NOTES=$(echo {} | tera --env --template templates/release.md --stdin)
+          echo "RELEASE_NOTES=${RELEASE_NOTES}" >> $GITHUB_ENV
+
+      - name: Create Release
         id: create-release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.RELEASE_VERSION }}-${{ env.SHORT_SHA }}
+          tag_name: ${{ env.RELEASE_VERSION }}
           release_name: Tera ${{ env.RELEASE_VERSION }} (${{ env.SHORT_SHA }})
-          body: |
-            # Description
-            You can find the changelogs below.
-
-            # Downloads
-            Download the binary for your OS from below:
-            - **Linux**
-              - [deb package](https://github.com/chevdor/tera-cli/releases/download/${{ env.RELEASE_VERSION }}/linux/tera-cli_linux_amd64.deb)
-
-            # Release Highlights
-            ----
-            These were the highlights. Check below for the full changelog :point_down:
-            ${{ steps.change_log.outputs.changes }}
-          draft: true
+          body: ${{ env.RELEASE_NOTES }}
+          draft: false
 
   publish-binaries:
     runs-on: ubuntu-latest
