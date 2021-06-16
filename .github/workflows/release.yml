@@ -61,19 +61,20 @@ jobs:
       - name: Generate changelog
         id: change_log
         run: |
-          JSON=$(git log \
-            --pretty=format:'{%n  "commit": "%H",%n  "author": "%aN <%aE>",%n  "date": "%ad",%n  "message": "%f"%n},' \
+          LAST_TAG=$(git describe --tags --abbrev=0)
+          JSON=$(git log $LAST_TAG..HEAD \
+            --pretty=format:'{ "commit": "%H", "short_sha": "%h", "author": "%an", "date": "%ad", "message": "%s"},' \
             $@ | \
-            perl -pe 'BEGIN{print "["}; END{print "]\n"}' | \
+            perl -pe 'BEGIN{print "{ \"since\": \"'${LAST_TAG}'\",  \"commits\": ["}; END{print "]}"}' | \
             perl -pe 's/},]/}]/')
-          echo "::set-output name=changes::$JSON"
+          CHANGELOG=$(echo $JSON | tera --template templates/changelog.md --stdin)
+          echo "::set-output name=changes::$CHANGELOG"
 
       - name: Render release notes
         run: |
           export DEBIAN_URL="https://github.com/chevdor/tera-cli/releases/download/${{ env.RELEASE_VERSION }}/linux/tera-cli_linux_amd64.deb"
           export CHANGELOG="${{ steps.change_log.outputs.changes }}"
-          export RELEASE_NOTES=$(echo {} | tera --env --template templates/release.md --stdin)
-          echo "RELEASE_NOTES=${RELEASE_NOTES}" >> $GITHUB_ENV
+          tera --env --env-only --template templates/release.md > RELEASE_NOTES.md
 
       - name: Create Release
         id: create-release
@@ -83,7 +84,7 @@ jobs:
         with:
           tag_name: ${{ env.RELEASE_VERSION }}
           release_name: Tera ${{ env.RELEASE_VERSION }} (${{ env.SHORT_SHA }})
-          body: ${{ env.RELEASE_NOTES }}
+          body_path: ./RELEASE_NOTES.md
           draft: false
 
   publish-binaries:

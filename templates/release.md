@@ -17,7 +17,4 @@ dpkg -i tera-cli_linux_amd64.deb
 tera --version
 ```
 
-# Release Highlights
-----
-These were the highlights. Check below for the full changelog :point_down:
 {{ CHANGELOG }}
