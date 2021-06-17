@@ -2,19 +2,19 @@
 authors = ["chevdor <chevdor@gmail.com>"]
 edition = "2018"
 name = "tera-cli"
-version = "0.1.1"
+version = "0.1.2"
 description = "A command line utility written in Rust to render templates from json|toml|yaml && ENV, using the tera templating engine"
 readme = "README.md"
 license = "MIT"
 
 [dependencies]
 clap = "3.0.0-beta.2"
-env_logger = "0.8.3"
+env_logger = "0.8.4"
 log = "0.4.14"
 serde = "1.0.126"
 serde_json = {version = "1.0.64", optional = false}
 serde_yaml = {version = "0.8.17", optional = false}
-tera = "1.10.0"
+tera = "1.11.0"
 toml = {version = "0.5.8", optional = false}
 
 [dev-dependencies]
