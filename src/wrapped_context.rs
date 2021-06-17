@@ -19,6 +19,13 @@ pub struct WrappedContext {
 	opts: Opts,
 }
 
+#[derive(Debug, PartialEq)]
+pub enum SupportedType {
+	Json,
+	Toml,
+	Yaml,
+}
+
 impl WrappedContext {
 	pub fn new(opts: Opts) -> Self {
 		Self { context: Context::new(), opts }
@@ -30,8 +37,8 @@ impl WrappedContext {
 
 	pub fn append_json(&mut self, str: &str) {
 		debug!("Appending json");
-		let json = str.parse::<serde_json::Value>().expect("Parse json");
-		let object = json.as_object().expect("Json object expected");
+		let json = str.parse::<serde_json::Value>().expect("JSON parsing");
+		let object = json.as_object().expect("JSON as object");
 
 		for (k, v) in object.iter() {
 			self.handle_collision("json", k, v);
@@ -40,8 +47,8 @@ impl WrappedContext {
 
 	pub fn append_toml(&mut self, str: &str) {
 		debug!("Appending toml");
-		let value = str.parse::<toml::Value>().unwrap();
-		let table = value.as_table().unwrap();
+		let value = str.parse::<toml::Value>().expect("TOML Parsing");
+		let table = value.as_table().expect("TOML as table");
 
 		for (k, v) in table.iter() {
 			self.handle_collision("toml", k, v);
@@ -50,8 +57,8 @@ impl WrappedContext {
 
 	pub fn append_yaml(&mut self, str: &str) {
 		debug!("Appending yaml");
-		let value: serde_yaml::Value = serde_yaml::from_str(str).unwrap();
-		let mapping = value.as_mapping().unwrap();
+		let value: serde_yaml::Value = serde_yaml::from_str(str).expect("YAML parsing");
+		let mapping = value.as_mapping().expect("YAML as mapping");
 
 		for (k, v) in mapping.iter() {
 			let k = k.as_str().unwrap();
@@ -93,6 +100,40 @@ impl WrappedContext {
 		}
 	}
 
+	pub fn get_type(str: &str) -> Option<SupportedType> {
+		if let Ok(v) = str.parse::<serde_json::Value>() {
+			if v.as_object().is_some() {
+				return Some(SupportedType::Json);
+			} else {
+				debug!("Found json but not an Object")
+			}
+		} else {
+			debug!("not json");
+		}
+
+		if let Ok(v) = str.parse::<toml::Value>() {
+			if v.as_table().is_some() {
+				return Some(SupportedType::Toml);
+			} else {
+				debug!("Found toml but not a table")
+			}
+		} else {
+			debug!("not toml");
+		}
+
+		if let Ok(v) = serde_yaml::from_str::<serde_yaml::Value>(str) {
+			if v.as_mapping().is_some() {
+				return Some(SupportedType::Yaml);
+			} else {
+				debug!("Found yaml but not a mapping")
+			}
+		} else {
+			debug!("not yaml");
+		}
+
+		None
+	}
+
 	pub fn create_context(&mut self) {
 		if (self.opts.env || self.opts.env_only) && self.opts.env_first {
 			info!("Appending env to context first, env-key: {:?}", self.opts.env_key);
@@ -104,19 +145,15 @@ impl WrappedContext {
 			let mut stdin = stdin.lock();
 			let mut buf: Vec<u8> = Vec::with_capacity(BUFFER_SIZE);
 			let res = stdin.read_to_end(&mut buf).map_err(|e| e.to_string());
-			if res.is_err() || res.unwrap() == 0 {
-				panic!("if you provide stdin, make sure it is not empty"); // TODO: do we care actually ?
-			}
+			res.expect("Failed reading stdin");
 			let input = String::from_utf8(buf.to_vec()).unwrap();
 
-			// TODO: here we could check the type and append accordingly
-			// match Self::get_type(&input) {
-			// 	json && input.len() > 0 => ...
-			// 	toml && input.len() > 0 => ...
-			// 	yaml && input.len() > 0 => ...
-			// 	_ => {}
-			// }
-			self.append_json(&input);
+			match Self::get_type(&input) {
+				Some(SupportedType::Json) if !input.is_empty() => self.append_json(&input),
+				Some(SupportedType::Toml) if !input.is_empty() => self.append_toml(&input),
+				Some(SupportedType::Yaml) if !input.is_empty() => self.append_yaml(&input),
+				_ => {}
+			}
 		} else if self.opts.context.is_some() {
 			// here we know that we have a Path since --stdin is not passed
 			let context_file = self.opts.context.as_ref().unwrap();
@@ -136,5 +173,52 @@ impl WrappedContext {
 			info!("Appending env to context, env-key: {:?}", self.opts.env_key);
 			self.append_env();
 		}
+	}
+}
+
+#[cfg(test)]
+mod test_context {
+	use super::*;
+
+	#[test]
+	fn test_get_type_json() {
+		let data = json!({
+			"name": "John Doe",
+			"age": 43,
+			"phones": [
+				"+44 1234567",
+				"+44 2345678"
+			]
+		});
+
+		assert!(WrappedContext::get_type(&data.to_string()) == Some(SupportedType::Json));
+	}
+
+	#[test]
+	fn test_get_type_toml() {
+		let data = r##"
+        name = "John"
+		age = 42
+    	"##;
+
+		assert!(WrappedContext::get_type(&data.to_string()) == Some(SupportedType::Toml));
+	}
+
+	#[test]
+	fn test_get_type_yaml() {
+		let data = r##"
+		name: "Bob"
+		ag: 42
+    	"##;
+		assert!(WrappedContext::get_type(&data.to_string()) == Some(SupportedType::Yaml));
+	}
+
+	#[test]
+	fn test_get_type_na() {
+		let data = r##"
+        foobar
+    	"##;
+
+		assert!(WrappedContext::get_type(&data.to_string()) == None);
 	}
 }
