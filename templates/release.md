@@ -9,7 +9,6 @@ Download the binary for your OS from below:
     - [Debian package]({{ DEBIAN_URL }})
 - **MacOS**
     - [Archive]({{ MACOS_TGZ_URL }})
-    - [Binary]({{ MACOS_BIN_URL }})
 # Install
 
 ## From source

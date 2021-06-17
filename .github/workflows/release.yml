@@ -43,6 +43,8 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Get Release Version
         run: |
           echo GITHUB_REF=$GITHUB_REF
@@ -103,13 +105,12 @@ jobs:
           cat $HOME/tera.rb
 
       - name: Update Homebrew Formula
-        if: github.ref == 'refs/heads/master'
         run: |
           cp -f $HOME/tera.rb Formula/tera.rb
           git config --global user.name 'TeraBot'
           git config --global user.email 'chevdor@users.noreply.github.com'
           git commit Formula/tera.rb -m "build: new homebrew formula for ${{ env.RELEASE_VERSION }}"
-          git push
+          git push origin HEAD:master
 
   create_draft:
     needs: ["linux", "macos"]
@@ -149,9 +150,8 @@ jobs:
 
       - name: Render release notes
         run: |
-          export DEBIAN_URL="https://github.com/chevdor/tera-cli/releases/download/${{ env.RELEASE_VERSION }}/linux/tera-cli_linux_amd64.deb"
-          export MACOS_TGZ_URL="https://github.com/chevdor/tera-cli/releases/download/${{ env.RELEASE_VERSION }}/macos/tera-macos-${{ env.RELEASE_VERSION }}.tar.gz"
-          export MACOS_BIN_URL="https://github.com/chevdor/tera-cli/releases/download/${{ env.RELEASE_VERSION }}/macos/tera-macos-${{ env.RELEASE_VERSION }}"
+          export DEBIAN_URL="https://github.com/chevdor/tera-cli/releases/download/${{ env.RELEASE_VERSION }}/tera-cli_linux_amd64.deb"
+          export MACOS_TGZ_URL="https://github.com/chevdor/tera-cli/releases/download/${{ env.RELEASE_VERSION }}/tera-macos-${{ env.RELEASE_VERSION }}.tar.gz"
           export CHANGELOG=$(cat changelog.md)
           tera --env --env-only --template templates/release.md > RELEASE_NOTES.md
 
@@ -178,7 +178,7 @@ jobs:
 
       - uses: actions/download-artifact@v2
 
-      - name: Upload binaries
+      - name: Upload Debian package
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -187,3 +187,13 @@ jobs:
           asset_path: "linux/tera-cli_linux_amd64.deb"
           asset_name: "tera-cli_linux_amd64.deb"
           asset_content_type: application/vnd.debian.binary-package
+
+      - name: Upload MacOS archive
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_draft.outputs.asset_upload_url }}
+          asset_path: "macos/tera-macos-${{ env.RELEASE_VERSION }}.tar.gz"
+          asset_name: "tera-macos-${{ env.RELEASE_VERSION }}.tar.gz"
+          asset_content_type: application/gzip
