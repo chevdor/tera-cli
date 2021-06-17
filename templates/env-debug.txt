@@ -1,0 +1,6 @@
+{# you may debug using: #}
+{# tera --template templates/env-debug.txt --env-only --env-key env #}
+
+{%- for key, value in env -%}
+- {{ key }}={{ value }}
+{% endfor %}
