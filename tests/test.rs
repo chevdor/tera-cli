@@ -41,6 +41,41 @@ mod cli_tests {
 	}
 
 	#[cfg(test)]
+	mod stdin {
+		use std::fs;
+
+		use assert_cmd::Command;
+		use predicates::prelude::*;
+
+		#[test]
+		fn it_process_json_stdin() {
+			let mut cmd = Command::cargo_bin(env!("CARGO_BIN_EXE_tera")).unwrap();
+			let stdin = fs::read_to_string("data/basic/basic.json").unwrap();
+
+			let assert = cmd.write_stdin(stdin).arg("-t").arg("data/basic/basic.tera").arg("--stdin").assert();
+			assert.success().stdout(predicate::str::contains("Bob likes orange"));
+		}
+
+		#[test]
+		fn it_process_toml_stdin() {
+			let mut cmd = Command::cargo_bin(env!("CARGO_BIN_EXE_tera")).unwrap();
+			let stdin = fs::read_to_string("data/basic/basic.toml").unwrap();
+
+			let assert = cmd.write_stdin(stdin).arg("-t").arg("data/basic/basic.tera").arg("--stdin").assert();
+			assert.success().stdout(predicate::str::contains("Bob likes orange"));
+		}
+
+		#[test]
+		fn it_process_yaml_stdin() {
+			let mut cmd = Command::cargo_bin(env!("CARGO_BIN_EXE_tera")).unwrap();
+			let stdin = fs::read_to_string("data/basic/basic.yaml").unwrap();
+
+			let assert = cmd.write_stdin(stdin).arg("-t").arg("data/basic/basic.tera").arg("--stdin").assert();
+			assert.success().stdout(predicate::str::contains("Bob likes orange"));
+		}
+	}
+
+	#[cfg(test)]
 	mod env {
 		use assert_cmd::Command;
 		use predicates::prelude::*;
