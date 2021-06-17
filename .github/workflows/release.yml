@@ -36,8 +36,83 @@ jobs:
           name: linux
           path: "tera-cli_linux_amd64.deb"
 
+  macos:
+    env:
+      TARGET_DIR: target/release
+
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get Release Version
+        run: |
+          echo GITHUB_REF=$GITHUB_REF
+          RELEASE_VERSION=${GITHUB_REF#refs/*/}
+          RAW_VERSION=${RELEASE_VERSION:1}
+          echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
+          echo "RAW_VERSION=$RAW_VERSION" >> $GITHUB_ENV
+          echo "SHORT_SHA=${GITHUB_SHA::8}" >> $GITHUB_ENV
+
+      - name: Install latest nightly
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          override: true
+          components: rustfmt, clippy
+
+      - name: Check tooling
+        shell: bash
+        run: |
+          tar --version
+          shasum --version
+
+      - name: Build MacOS binary
+        shell: bash
+        run: |
+          cargo build --release
+          # echo "${{ github.workspace }}/${{ env.TARGET_DIR }}" >> $GITHUB_PATH
+          cp "${{ env.TARGET_DIR }}/tera" /usr/local/bin
+
+      - name: Compress & sha256
+        run: |
+          tar -czf ${{ env.TARGET_DIR }}/tera-macos-${{ env.RELEASE_VERSION }}.tar.gz -C ${{ env.TARGET_DIR }} tera
+          SHA256=$(shasum -a 256 ${{ env.TARGET_DIR }}/tera-macos-${{ env.RELEASE_VERSION }}.tar.gz | awk '{ print $1}' | tee ${{ env.TARGET_DIR }}/tera-macos-${{ env.RELEASE_VERSION }}.tar.gz.sha256)
+          echo SHA256: $SHA256
+          echo "SHA256=$SHA256" >> $GITHUB_ENV
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: macos
+          path: |
+            ${{ env.TARGET_DIR }}/tera
+            ${{ env.TARGET_DIR }}/tera-macos-${{ env.RELEASE_VERSION }}.tar.gz
+            ${{ env.TARGET_DIR }}/tera-macos-${{ env.RELEASE_VERSION }}.tar.gz.sha256
+
+      # We do that before checking out master (in case we were not in master already)
+      - name: Prepare new Formula
+        env:
+          NAME: Tera
+          DESCRIPTION: "A command line utility written in Rust to render templates using the tera templating engine"
+          SITE: https://github.com
+          REPO: chevdor/tera-cli
+          SHA256: ${{env.SHA256}}
+          VERSION: ${{env.RAW_VERSION}}
+        run: |
+          tera --version
+          tera --template templates/formula.rb --env-only > $HOME/tera.rb
+          cat $HOME/tera.rb
+
+      - name: Update Homebrew Formula
+        if: github.ref == 'refs/heads/master'
+        run: |
+          cp -f $HOME/tera.rb Formula/tera.rb
+          git config --global user.name 'TeraBot'
+          git config --global user.email 'chevdor@users.noreply.github.com'
+          git commit Formula/tera.rb -m "build: new homebrew formula for ${{ env.RELEASE_VERSION }}"
+          git push
+
   create_draft:
-    needs: ["linux"]
+    needs: ["linux", "macos"]
     name: Create Draft
     runs-on: ubuntu-latest
     outputs:
@@ -75,6 +150,8 @@ jobs:
       - name: Render release notes
         run: |
           export DEBIAN_URL="https://github.com/chevdor/tera-cli/releases/download/${{ env.RELEASE_VERSION }}/linux/tera-cli_linux_amd64.deb"
+          export MACOS_TGZ_URL="https://github.com/chevdor/tera-cli/releases/download/${{ env.RELEASE_VERSION }}/macos/tera-macos-${{ env.RELEASE_VERSION }}.tar.gz"
+          export MACOS_BIN_URL="https://github.com/chevdor/tera-cli/releases/download/${{ env.RELEASE_VERSION }}/macos/tera-macos-${{ env.RELEASE_VERSION }}"
           export CHANGELOG=$(cat changelog.md)
           tera --env --env-only --template templates/release.md > RELEASE_NOTES.md
 
@@ -87,7 +164,7 @@ jobs:
           tag_name: ${{ env.RELEASE_VERSION }}
           release_name: Tera ${{ env.RELEASE_VERSION }} (${{ env.SHORT_SHA }})
           body_path: ./RELEASE_NOTES.md
-          draft: false
+          draft: true
 
   publish-binaries:
     runs-on: ubuntu-latest

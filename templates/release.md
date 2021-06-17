@@ -6,15 +6,31 @@ You can find the changelogs below.
 
 Download the binary for your OS from below:
 - **Linux**
-    - [deb package]({{ DEBIAN_URL }})
-
+    - [Debian package]({{ DEBIAN_URL }})
+- **MacOS**
+    - [Archive]({{ MACOS_TGZ_URL }})
+    - [Binary]({{ MACOS_BIN_URL }})
 # Install
 
+## From source
+
 ```
-URL={{ DEBIAN_URL }}
-wget $URL
+cargo install --git https://github.com/chevdor/tera-cli
+```
+
+## Linux
+```
+wget {{ DEBIAN_URL }}
 dpkg -i tera-cli_linux_amd64.deb
-tera --version
+tera --help
+```
+
+## MacOS
+
+```
+brew tap chevdor/tera-cli https://github.com/chevdor/tera-cli
+brew update
+brew install tera-cli
 ```
 
 {{ CHANGELOG }}
