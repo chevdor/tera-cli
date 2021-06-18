@@ -29,7 +29,7 @@ tera --help
 ```
 brew tap chevdor/tera-cli https://github.com/chevdor/tera-cli
 brew update
-brew install tera-cli
+brew install chevdor/tera-cli/tera
 ```
 
 {{ CHANGELOG }}
