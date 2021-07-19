@@ -135,7 +135,7 @@ Passing the `-a | --escape` flag allows escaping the content.
 
 ## Usage
 
-    tera-cli 0.1.0
+    tera-cli 0.1.3
     chevdor <chevdor@gmail.com>
     Command line utility for the tera templating engine. You need to provide a template using the tera
     syntax as well as some data (various format are supported)

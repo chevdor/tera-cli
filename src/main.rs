@@ -29,7 +29,7 @@ fn main() -> Result<(), String> {
 	let context: &Context = wrapped_context.context();
 	trace!("context:\n{:#?}", context);
 
-	let rendered = Tera::one_off(&template, &context, autoescape).unwrap();
+	let rendered = Tera::one_off(&template, context, autoescape).unwrap();
 
 	println!("{}", rendered);
 

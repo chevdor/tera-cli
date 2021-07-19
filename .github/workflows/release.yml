@@ -30,7 +30,7 @@ jobs:
         run: |
           cargo deb -p tera-cli -o "tera-cli_linux_amd64.deb"
 
-      - name: Upload artifacts
+      - name: Upload Linux artifacts
         uses: actions/upload-artifact@v2
         with:
           name: linux
@@ -71,7 +71,6 @@ jobs:
         shell: bash
         run: |
           cargo build --release
-          # echo "${{ github.workspace }}/${{ env.TARGET_DIR }}" >> $GITHUB_PATH
           cp "${{ env.TARGET_DIR }}/tera" /usr/local/bin
 
       - name: Compress & sha256
@@ -81,7 +80,7 @@ jobs:
           echo SHA256: $SHA256
           echo "SHA256=$SHA256" >> $GITHUB_ENV
 
-      - name: Upload artifacts
+      - name: Upload MacOS artifacts
         uses: actions/upload-artifact@v2
         with:
           name: macos
@@ -129,6 +128,7 @@ jobs:
           echo "SHORT_SHA=${GITHUB_SHA::8}" >> $GITHUB_ENV
       - uses: actions/download-artifact@v2
 
+      # TODO: here we could fetch the artifacts and reuse our freshest build.
       - name: Install tera v0.1.0
         run: |
           URL=https://github.com/chevdor/tera-cli/releases/download/v0.1.0-ae9bc49c/tera-cli_linux_amd64.deb
