@@ -1,0 +1,5 @@
+# Ignore everything
+*
+# With the exception of
+!src/**
+!Cargo*
