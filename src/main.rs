@@ -7,7 +7,7 @@ use clap::{crate_name, crate_version, Clap};
 use env_logger::Env;
 use log::{debug, info, trace};
 use opts::*;
-use std::{fs::File, io::Write};
+use std::{fs::File, io::Write, string::String};
 use tera::{Context, Tera};
 
 fn main() -> Result<(), String> {
@@ -22,6 +22,7 @@ fn main() -> Result<(), String> {
 
 	let autoescape = opts.autoescape;
 	let output = opts.out.to_owned();
+	let include = opts.include;
 
 	let mut wrapped_context = wrapped_context::WrappedContext::new(opts);
 	wrapped_context.create_context();
@@ -29,7 +30,11 @@ fn main() -> Result<(), String> {
 	let context: &Context = wrapped_context.context();
 	trace!("context:\n{:#?}", context);
 
-	let rendered = Tera::one_off(&template, context, autoescape).unwrap();
+	let mut rendered = String::from("");
+
+	if !include {
+		rendered = Tera::one_off(&template, context, autoescape).unwrap();
+	}
 
 	println!("{}", rendered);
 
