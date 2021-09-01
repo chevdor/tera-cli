@@ -22,8 +22,13 @@ fn main() -> Result<(), String> {
 
 	let autoescape = opts.autoescape;
 	let output = opts.out.to_owned();
-	let include = opts.include;
-	let path = canonicalize(&opts.template).unwrap();
+	let mut include = opts.include;
+	let mut path = canonicalize(&opts.template).unwrap();
+
+	if opts.include_path.is_some() {
+		include = true;
+		path = canonicalize(opts.include_path.as_ref().unwrap()).unwrap();
+	}
 
 	let mut wrapped_context = wrapped_context::WrappedContext::new(opts);
 	wrapped_context.create_context();
@@ -34,7 +39,12 @@ fn main() -> Result<(), String> {
 	let rendered;
 
 	if include {
-		let dir = path.parent().unwrap().to_str().unwrap();
+		let mut dir = path.to_str().unwrap();
+
+		if path.is_file() {
+			dir = path.parent().unwrap().to_str().unwrap();
+		}
+
 		let glob = dir.to_owned() + "/**/*";
 
 		let mut tera = match Tera::new(&glob) {
