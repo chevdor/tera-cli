@@ -7,7 +7,7 @@ use clap::{crate_name, crate_version, Clap};
 use env_logger::Env;
 use log::{debug, info, trace};
 use opts::*;
-use std::{fs::File, io::Write, string::String};
+use std::{fs::canonicalize, fs::File, io::Write, string::String};
 use tera::{Context, Tera};
 
 fn main() -> Result<(), String> {
@@ -23,6 +23,7 @@ fn main() -> Result<(), String> {
 	let autoescape = opts.autoescape;
 	let output = opts.out.to_owned();
 	let include = opts.include;
+	let path = canonicalize(&opts.template).unwrap();
 
 	let mut wrapped_context = wrapped_context::WrappedContext::new(opts);
 	wrapped_context.create_context();
@@ -30,9 +31,26 @@ fn main() -> Result<(), String> {
 	let context: &Context = wrapped_context.context();
 	trace!("context:\n{:#?}", context);
 
-	let mut rendered = String::from("");
+	let rendered;
 
-	if !include {
+	if include {
+		let dir = path.parent().unwrap().to_str().unwrap();
+		let glob = dir.to_owned() + "/**/*";
+
+		let mut tera = match Tera::new(&glob) {
+			Ok(t) => t,
+			Err(e) => {
+				println!("Parsing error(s): {}", e);
+				::std::process::exit(1);
+			}
+		};
+
+		if !autoescape {
+			tera.autoescape_on(vec![]);
+		}
+
+		rendered = tera.render_str(&template, context).unwrap();
+	} else {
 		rendered = Tera::one_off(&template, context, autoescape).unwrap();
 	}
 
