@@ -56,6 +56,25 @@ The **tera** engine allows way more than the simple replacements shown above. Yo
 
     cargo install --git https://github.com/chevdor/tera-cli
 
+== Execute from container
+
+=== Build container image
+
+    docker build --rm --tag 'tera/cli' .
+
+=== Execute `tera` from container
+
+Check tera help
+
+    docker run --interactive --tty --rm tera/cli --help
+
+Parse a template
+
+    docker run --interactive --tty --rm \
+        --volume="$(pwd):/opt" \
+        --env=FOO=BAR \
+        tera/cli --template templates/env-debug.txt --env-only --env-key env
+
 == What can I do with that anyway ?
 
 Well... if you have **data** and you want to format them, this tool will likely be a great companion.
