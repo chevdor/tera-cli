@@ -103,7 +103,7 @@ While the syntax is a little more verbose, paired with `--fail-on-collision`, th
 
 Using the `--include` flag, the command will scan recursively for files that could be https://tera.netlify.app/docs/#include[included], used as https://tera.netlify.app/docs/#macros[macros] or for https://tera.netlify.app/docs/#inheritance[inheritance]. By default, it will scan the folder where the main template is located, unless the `--include-path` option is given.
 
-From this repository, you can test *include* feature with the command `USER="[YOURNAME]" tera --template data/include/hello.txt --include --env-only`.
+From this repository, you can test *include* feature with the command `USER="[YOURNAME]" tera --template data/include/hello.txt --include --env-only` and test *inheritance* feature with `USER="[YOURNAME]" tera --template data/inheritance/child.txt --inherit --env-only`.
 
 === Output
 

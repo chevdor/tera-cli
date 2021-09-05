@@ -1,0 +1,7 @@
+This is a BASE template.
+
+The default greetings shows "Greetings!" but we can improve that with inheritance!
+
+{% block greetings %}
+Greetings!
+{% endblock greetings %}
