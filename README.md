@@ -125,6 +125,12 @@ By default, your ENV variables will be loaded at the root of the context data. F
 
 While the syntax is a little more verbose, paired with `--fail-on-collision`, this option allows ensuring that nothing happens in your back.
 
+### External files
+
+Using the `--include` flag, the command will scan recursively for files that could be [included](https://tera.netlify.app/docs/#include), used as [macros](https://tera.netlify.app/docs/#macros) or for [inheritance](https://tera.netlify.app/docs/#inheritance). By default, it will scan the folder where the main template is located, unless the `--include-path` option is given.
+
+From this repository, you can test **include** feature with the command `USER="[YOURNAME]" tera --template data/include/hello.txt --include --env-only` and test **inheritance** feature with `USER="[YOURNAME]" tera --template data/inheritance/child.txt --inherit --env-only`.
+
 ### Output
 
 By default,
@@ -159,13 +165,20 @@ Passing the `-a | --escape` flag allows escaping the content.
                                    be raised
             --fail-on-collision    if you prefer your data to override the ENV
         -h, --help                 Prints help information
+        -i, --include              This flag tells the command to parse all templates found in the same
+                                   path where the given template is located [aliases: inherit]
         -s, --stdin                The context data can be passed using stdin
         -V, --version              Prints version information
 
     OPTIONS:
-            --env-key <env-key>      By default, if --env is set, the environment variables will be
-                                     attached at the root of the context. This is convenient but may end
-                                     up conflicting with your data. To prevent collisions, you can
-                                     provide a custom key with this option
-        -o, --out <out>              Optional output file. If not passed, using stdout
-        -t, --template <template>    Location of the template
+            --env-key <env-key>
+                By default, if --env is set, the environment variables will be attached at the root of
+                the context. This is convenient but may end up conflicting with your data. To prevent
+                collisions, you can provide a custom key with this option
+
+            --include-path <include-path>
+                Option to define a different path from which search and parse templates [aliases:
+                inherit-path]
+
+        -o, --out <out>                      Optional output file. If not passed, using stdout
+        -t, --template <template>            Location of the template

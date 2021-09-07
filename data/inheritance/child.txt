@@ -1,0 +1,7 @@
+{% extends "base.txt" %}
+
+The following block will replace our greetings in the base.
+
+{% block greetings %}
+May the force be with you **{{ USER }}**
+{% endblock greetings %}

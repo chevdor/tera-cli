@@ -11,6 +11,15 @@ pub struct Opts {
 	#[clap(short, long)]
 	pub template: PathBuf,
 
+	/// This flag tells the command to parse all templates found in the same
+	/// path where the given template is located.
+	#[clap(short, long, visible_alias = "inherit")]
+	pub include: bool,
+
+	/// Option to define a different path from which search and parse templates.
+	#[clap(long, visible_alias = "inherit-path")]
+	pub include_path: Option<PathBuf>,
+
 	/// Location of the context data. This file can be of the following type:
 	/// json | toml | yaml. If you prefer to pass the data as stdin, use `--stdin`
 	#[clap(index = 1, required_unless_present_any = &["stdin", "env-only"], conflicts_with = "env-only")]
