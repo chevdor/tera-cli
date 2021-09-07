@@ -37,3 +37,9 @@ license-file = ["LICENSE", "0"]
 maintainer = "Wilfried Kopp aka. Chevdor <chevdor@gmail.com>"
 priority = "optional"
 section = "utility"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "z"
+panic = "abort"
