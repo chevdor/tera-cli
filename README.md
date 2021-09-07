@@ -77,22 +77,31 @@ The **tera** engine allows way more than the simple replacements shown above. Yo
 
 ## Execute as Docker container
 
+You can find a `tera` Docker image at `chevdor/tera`. The image is very small and should be less than 8MB.
+
+You can test it with:
+
+    docker run --rm -it chevdor/tera --version
+
+The Docker image mentioned above is not yet built by the CI so you may not find the very latest version from time to time.
+
 ### Build container image
 
-    docker build --tag 'tera-cli' .
+    docker build --tag tera-cli .
 
 ### Execute `tera` from the Docker container
 
-Check tera help
+**Check the tera help**
 
     docker run -it --rm tera-cli --help
 
-Parse a template
+**Parse a template**
 
     docker run -it --rm \
-        --volume="$(pwd):/opt" \
+        --volume="$(pwd)/templates:/templates" \
+        --read-only \
         --env=FOO=BAR \
-        tera-cli --template templates/env-debug.txt --env-only --env-key env
+        tera-cli --template /templates/env-debug.txt --env-only --env-key env
 
 ## What can I do with that anyway ?
 
@@ -148,11 +157,13 @@ While the syntax is a little more verbose, paired with `--fail-on-collision`, th
 
 Using the `--include` flag, the command will scan recursively for files that could be [included](https://tera.netlify.app/docs/#include), used as [macros](https://tera.netlify.app/docs/#macros) or for [inheritance](https://tera.netlify.app/docs/#inheritance). By default, it will scan the folder where the main template is located, unless the `--include-path` option is given.
 
-From this repository, you can test **include** feature with the command `USER="[YOURNAME]" tera --template data/include/hello.txt --include --env-only` and test **inheritance** feature with `USER="[YOURNAME]" tera --template data/inheritance/child.txt --inherit --env-only`.
+From this repository, you can test the **include** feature with the command:
 
-### Output
+    USER="[YOURNAME]" tera --template data/include/hello.txt --include --env-only
 
-By default,
+and test the **inheritance** feature with:
+
+    USER="[YOURNAME]" tera --template data/inheritance/child.txt --inherit --env-only
 
 ### Content escaping
 
