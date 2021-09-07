@@ -42,3 +42,6 @@ brew:
 	SITE=https://github.com
 	REPO=chevdor/tera-cli
 	tera --template templates/formula.rb --env-only > Formula/tera.rb
+
+bump:
+	cargo workspaces version --no-git-push
