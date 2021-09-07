@@ -27,8 +27,11 @@ _fmt:
 _clippy:
 	cargo clippy
 
+_deny:
+	cargo deny check
+
 # Run checks such as clippy, rustfmt, etc...
-check: _clippy _fmt
+check: _clippy _fmt _deny
 
 brew:
 	#!/usr/bin/env bash
