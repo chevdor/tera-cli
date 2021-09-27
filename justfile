@@ -18,14 +18,13 @@ _usage:
 doc:_usage
 	cargo doc -p tera-cli --all-features --no-deps
 
-
 # Run rustfmt
 _fmt:
-	cargo fmt --all
+	cargo +nightly fmt --all
 
 # Run clippy
 _clippy:
-	cargo clippy
+	cargo +nightly clippy
 
 _deny:
 	cargo deny check
