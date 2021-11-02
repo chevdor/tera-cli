@@ -54,6 +54,13 @@ jobs:
   quick_check-tests:
     runs-on: ubuntu-latest
     steps:
+      - name: Install Rust stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
       - uses: actions/checkout@v2
 
       - name: Cargo test
