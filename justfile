@@ -15,7 +15,7 @@ _usage:
 	cargo run -q -- --help > doc/usage.adoc
 
 # Generate documentation
-doc:_usage
+doc: _usage
 	cargo doc -p tera-cli --all-features --no-deps
 
 # Run rustfmt

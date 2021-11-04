@@ -171,7 +171,7 @@ Passing the `-a | --escape` flag allows escaping the content.
 
 ## Usage
 
-    tera-cli 0.2.0
+    tera-cli 0.2.1
 
     chevdor <chevdor@gmail.com>
 
