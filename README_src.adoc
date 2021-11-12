@@ -56,6 +56,19 @@ The **tera** engine allows way more than the simple replacements shown above. Yo
 
     cargo install --git https://github.com/chevdor/tera-cli
 
+== Hot reload
+
+You may find it useful to watch a folder with your templates and run `tera` if a template changes. For this to work, it is recommended to
+name you template as `foobar.md.tera` if your template expands into a markdown file for instance.
+You may then use https://github.com/emcrisostomo/fswatch[fswatch] and watch a `templates` folder using:
+
+```
+fswatch templates -e ".*\.md$" | \
+    xargs -n1 -I{} \
+    tera --include-path templates \
+        --template templates/template.md.tera context.json
+```
+
 == Execute as Docker container
 
 You can find a `tera` Docker image at `chevdor/tera`. The image is very small and should be less than 8MB.
