@@ -800,7 +800,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "tera-cli"
+name = "teracli"
 version = "0.2.1"
 dependencies = [
  "assert_cmd",

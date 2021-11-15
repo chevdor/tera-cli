@@ -1,7 +1,7 @@
 [package]
 authors = ["chevdor <chevdor@gmail.com>"]
 edition = "2021"
-name = "tera-cli"
+name = "teracli"
 version = "0.2.1"
 description = "A command line utility written in Rust to render templates from json|toml|yaml && ENV, using the tera templating engine"
 readme = "README.md"
