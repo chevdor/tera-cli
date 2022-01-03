@@ -184,14 +184,15 @@ mod test_context {
 	fn test_get_type_json() {
 		let data = json!({
 			"name": "John Doe",
-			"age": 43,
+			"age": 43u8,
 			"phones": [
 				"+44 1234567",
 				"+44 2345678"
 			]
-		});
+		})
+		.to_string();
 
-		assert!(WrappedContext::get_type(&data.to_string()) == Some(SupportedType::Json));
+		assert!(WrappedContext::get_type(&data) == Some(SupportedType::Json));
 	}
 
 	#[test]
@@ -199,9 +200,10 @@ mod test_context {
 		let data = r##"
         name = "John"
 		age = 42
-    	"##;
+    	"##
+		.to_string();
 
-		assert!(WrappedContext::get_type(&data.to_string()) == Some(SupportedType::Toml));
+		assert!(WrappedContext::get_type(&data) == Some(SupportedType::Toml));
 	}
 
 	#[test]
@@ -209,16 +211,18 @@ mod test_context {
 		let data = r##"
 		name: "Bob"
 		ag: 42
-    	"##;
-		assert!(WrappedContext::get_type(&data.to_string()) == Some(SupportedType::Yaml));
+    	"##
+		.to_string();
+		assert!(WrappedContext::get_type(&data) == Some(SupportedType::Yaml));
 	}
 
 	#[test]
 	fn test_get_type_na() {
 		let data = r##"
         foobar
-    	"##;
+    	"##
+		.to_string();
 
-		assert!(WrappedContext::get_type(&data.to_string()) == None);
+		assert!(WrappedContext::get_type(&data) == None);
 	}
 }
