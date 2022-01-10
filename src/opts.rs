@@ -1,11 +1,10 @@
-use clap::{crate_authors, crate_version, AppSettings, Clap};
+use clap::{crate_authors, crate_version, Parser};
 use std::path::PathBuf;
 
 /// Command line utility for the tera templating engine. You need to provide a template using the tera syntax
 /// as well as some data (various format are supported).
-#[derive(Clap, Debug)]
+#[derive(Debug, Parser)]
 #[clap(version = crate_version!(), author = crate_authors!())]
-#[clap(setting = AppSettings::ColoredHelp)]
 pub struct Opts {
 	/// Location of the template.
 	#[clap(short, long)]

@@ -1,15 +1,14 @@
 [package]
 authors = ["chevdor <chevdor@gmail.com>"]
-edition = "2021"
-name = "teracli"
-version = "0.2.1"
 description = "A command line utility written in Rust to render templates from json|toml|yaml && ENV, using the tera templating engine"
-readme = "README.md"
+edition = "2021"
 license = "MIT"
+name = "teracli"
+readme = "README.md"
+version = "0.2.1"
 
 [dependencies]
-clap = "=3.0.0-beta.4"
-clap_derive = "=3.0.0-beta.4"
+clap = {version = "3.0", features = ["derive", "env", "unicode", "cargo"]}
 env_logger = "0.9"
 log = "0.4"
 serde = "1.0"
