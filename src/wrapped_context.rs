@@ -162,7 +162,7 @@ impl WrappedContext {
 			match context_file.extension() {
 				Some(ext) if ext == "json" => self.append_json(&input),
 				Some(ext) if ext == "toml" => self.append_toml(&input),
-				Some(ext) if ext == "yaml" => self.append_yaml(&input),
+				Some(ext) if ext == "yaml" || ext == "yml" => self.append_yaml(&input),
 				ext => {
 					panic!("Extension not supported: {:?}", ext)
 				}
