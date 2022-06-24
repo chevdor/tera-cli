@@ -19,7 +19,7 @@ pub struct WrappedContext {
 	opts: Opts,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum SupportedType {
 	Json,
 	Toml,
