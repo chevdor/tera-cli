@@ -1,5 +1,6 @@
 VERSION := `toml get Cargo.toml package.version | jq -r`
 TARGET_DIR := "target/release"
+export TAG:=`toml get Cargo.toml "package.version" | jq -r .`
 
 # List available commands
 default:
@@ -47,3 +48,9 @@ brew:
 
 bump:
 	cargo workspaces version --no-git-push
+
+tag:
+    #!/usr/bin/env bash
+    echo Tagging version v$TAG
+    git tag "v$TAG" -f
+    git tag | sort -Vr | head
