@@ -28,7 +28,7 @@ jobs:
       - name: Build debian package
         shell: bash
         run: |
-          cargo deb -p tera-cli -o "tera-cli_linux_amd64.deb"
+          cargo deb -p teracli -o "tera-cli_linux_amd64.deb"
 
       - name: Upload Linux artifacts
         uses: actions/upload-artifact@v2
