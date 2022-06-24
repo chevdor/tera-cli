@@ -16,7 +16,7 @@ _usage:
 
 # Generate documentation
 doc: _usage
-	cargo doc -p tera-cli --all-features --no-deps
+	cargo doc -p teracli --all-features --no-deps
 
 # Run rustfmt
 _fmt:

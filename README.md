@@ -182,42 +182,48 @@ Passing the `-a | --escape` flag allows escaping the content.
 
 ## Usage
 
-    tera-cli 0.2.1
-
+    teracli 0.2.2
     chevdor <chevdor@gmail.com>
-
     Command line utility for the tera templating engine. You need to provide a template using the tera
     syntax as well as some data (various format are supported)
 
     USAGE:
-        tera [FLAGS] [OPTIONS] --template <TEMPLATE> [CONTEXT]
+        tera [OPTIONS] --template <TEMPLATE> [CONTEXT]
 
     ARGS:
         <CONTEXT>    Location of the context data. This file can be of the following type: json |
                      toml | yaml. If you prefer to pass the data as stdin, use `--stdin`
 
-    FLAGS:
-        -a, --escape               Auto-escape rendered content. This is useful for HTML output
-        -e, --env                  If true, the current ENV will be appended to the data under the
-                                   --env-key key
-            --env-first            By default, the context is made of the data you pass and the ENV is
-                                   applied afterwards. Setting this option will apply the ENV first.
-                                   This is interesting if you prefer your data to override the ENV
-            --env-only             If you want to solely use the ENV as context, you may pass this
-                                   option. This will prevent an error about no context being passed to
-                                   be raised
-            --fail-on-collision    if you prefer your data to override the ENV
-        -h, --help                 Print help information
-        -i, --include              This flag tells the command to parse all templates found in the same
-                                   path where the given template is located [aliases: inherit]
-        -s, --stdin                The context data can be passed using stdin
-        -V, --version              Print version information
-
     OPTIONS:
+        -a, --escape
+                Auto-escape rendered content. This is useful for HTML output
+
+        -e, --env
+                If true, the current ENV will be appended to the data under the --env-key key
+
+            --env-first
+                By default, the context is made of the data you pass and the ENV is applied afterwards.
+                Setting this option will apply the ENV first. This is interesting if you prefer your
+                data to override the ENV
+
             --env-key <ENV_KEY>
                 By default, if --env is set, the environment variables will be attached at the root of
                 the context. This is convenient but may end up conflicting with your data. To prevent
                 collisions, you can provide a custom key with this option
+
+            --env-only
+                If you want to solely use the ENV as context, you may pass this option. This will
+                prevent an error about no context being passed to be raised
+
+            --fail-on-collision
+                if you prefer your data to override the ENV
+
+        -h, --help
+                Print help information
+
+        -i, --include
+                This flag tells the command to parse all templates found in the same path where the
+                given template is located [aliases: inherit]
 
             --include-path <INCLUDE_PATH>
                 Option to define a different path from which search and parse templates [aliases:
@@ -226,5 +232,11 @@ Passing the `-a | --escape` flag allows escaping the content.
         -o, --out <OUT>
                 Optional output file. If not passed, using stdout
 
+        -s, --stdin
+                The context data can be passed using stdin
+
         -t, --template <TEMPLATE>
                 Location of the template
+
+        -V, --version
+                Print version information
