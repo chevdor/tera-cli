@@ -208,11 +208,9 @@ mod test_context {
 
 	#[test]
 	fn test_get_type_yaml() {
-		let data = r##"
-		name: "Bob"
-		ag: 42
-    	"##
-		.to_string();
+		let data = r##"name: "Bob"
+ag: 42"##
+			.to_string();
 		assert!(WrappedContext::get_type(&data) == Some(SupportedType::Yaml));
 	}
 
