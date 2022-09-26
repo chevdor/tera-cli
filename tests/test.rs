@@ -33,6 +33,15 @@ mod cli_tests {
 		}
 
 		#[test]
+		fn it_process_yaml_with_dashes() {
+			let mut cmd = Command::cargo_bin(env!("CARGO_BIN_EXE_tera")).unwrap();
+			let assert = cmd.arg("-t").arg("data/tests/dash-test.tera").arg("data/tests/dash-test.yaml").assert();
+			assert.success().stdout(predicate::str::contains(
+				"{\"sso.auth.success\":{\"description\":\"Authentification success\"}}",
+			));
+		}
+
+		#[test]
 		fn it_process_toml_to_stdout() {
 			let mut cmd = Command::cargo_bin(env!("CARGO_BIN_EXE_tera")).unwrap();
 			let assert = cmd.arg("-t").arg("data/basic/basic.tera").arg("data/basic/basic.toml").assert();

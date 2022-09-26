@@ -1,0 +1,4 @@
+context:
+  audit-events:
+    sso.auth.success:
+      description: Authentification success
