@@ -21,11 +21,11 @@ pub struct Opts {
 
 	/// Location of the context data. This file can be of the following type:
 	/// json | toml | yaml. If you prefer to pass the data as stdin, use `--stdin`
-	#[clap(index = 1, required_unless_present_any = &["stdin", "env-only"], conflicts_with = "env-only")]
+	#[clap(index = 1, required_unless_present_any = &["stdin", "env_only"], conflicts_with = "env_only")]
 	pub context: Option<PathBuf>,
 
 	/// The context data can be passed using stdin
-	#[clap(short, long, conflicts_with_all = &["context", "env-only"], required_unless_present_any = &["context", "env-only"])]
+	#[clap(short, long, conflicts_with_all = &["context", "env_only"], required_unless_present_any = &["context", "env_only"])]
 	pub stdin: bool,
 
 	/// If true, the current ENV will be appended to the data under the --env-key key

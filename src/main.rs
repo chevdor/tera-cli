@@ -3,7 +3,7 @@ mod template;
 mod wrapped_context;
 
 use crate::template::Template;
-use clap::{crate_name, crate_version, StructOpt};
+use clap::{crate_name, crate_version, Parser};
 use env_logger::Env;
 use log::{debug, info, trace};
 use opts::*;
