@@ -5,17 +5,17 @@ edition = "2021"
 license = "MIT"
 name = "teracli"
 readme = "README.md"
-version = "0.2.2"
+version = "0.2.3"
 
 [dependencies]
-clap = {version = "4", features = ["derive", "env", "unicode", "cargo"]}
+clap = { version = "4", features = ["derive", "env", "unicode", "cargo"] }
 env_logger = "0.9"
 log = "0.4"
 serde = "1.0"
-serde_json = {version = "1.0", optional = false}
-serde_yaml = {version = "0.9", optional = false}
+serde_json = { version = "1.0", optional = false }
+serde_yaml = { version = "0.9", optional = false }
 tera = "1.17"
-toml = {version = "0.5", optional = false}
+toml = { version = "0.5", optional = false }
 
 [dev-dependencies]
 assert_cmd = "2.0"
@@ -26,9 +26,7 @@ name = "tera"
 path = "src/main.rs"
 
 [package.metadata.deb]
-assets = [
-  ["target/release/tera", "usr/bin/", "755"],
-]
+assets = [["target/release/tera", "usr/bin/", "755"]]
 copyright = "2021, Wilfried Kopp aka. Chevdor <chevdor@gmail.com>"
 depends = "$auto"
 extended-description = """\
