@@ -50,7 +50,7 @@ fn main() -> Result<(), String> {
 		let mut tera = match Tera::new(&glob) {
 			Ok(t) => t,
 			Err(e) => {
-				println!("Parsing error(s): {}", e);
+				println!("Parsing error(s): {e}");
 				::std::process::exit(1);
 			}
 		};
@@ -64,7 +64,7 @@ fn main() -> Result<(), String> {
 		rendered = Tera::one_off(&template, context, autoescape).unwrap();
 	}
 
-	println!("{}", rendered);
+	println!("{rendered}");
 
 	if let Some(out_file) = output {
 		debug!("Saving to {}", out_file.display());

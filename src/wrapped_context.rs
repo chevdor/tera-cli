@@ -79,7 +79,7 @@ impl WrappedContext {
 			warn!("  - New value    : {:?}", v);
 
 			if self.opts.fail_on_collision {
-				eprintln!("Collision detected when adding {:?}={:?} from {}", k, v, from);
+				eprintln!("Collision detected when adding {k:?}={v:?} from {from}");
 				std::process::exit(1);
 			}
 		}
@@ -164,7 +164,7 @@ impl WrappedContext {
 				Some(ext) if ext == "toml" => self.append_toml(&input),
 				Some(ext) if ext == "yaml" || ext == "yml" => self.append_yaml(&input),
 				ext => {
-					panic!("Extension not supported: {:?}", ext)
+					panic!("Extension not supported: {ext:?}")
 				}
 			};
 		};
@@ -221,6 +221,6 @@ ag: 42"##
     	"##
 		.to_string();
 
-		assert!(WrappedContext::get_type(&data) == None);
+		assert!(WrappedContext::get_type(&data).is_none());
 	}
 }
