@@ -36,7 +36,7 @@ fn main() -> Result<(), String> {
 	let context: &Context = wrapped_context.context();
 	trace!("context:\n{:#?}", context);
 
-	let rendered;
+	let mut tera: Tera;
 
 	if include {
 		let mut dir = path.to_str().unwrap();
@@ -47,22 +47,22 @@ fn main() -> Result<(), String> {
 
 		let glob = dir.to_owned() + "/**/*";
 
-		let mut tera = match Tera::new(&glob) {
+		tera = match Tera::new(&glob) {
 			Ok(t) => t,
 			Err(e) => {
 				println!("Parsing error(s): {e}");
 				::std::process::exit(1);
 			}
 		};
-
-		if !autoescape {
-			tera.autoescape_on(vec![]);
-		}
-
-		rendered = tera.render_str(&template, context).unwrap();
 	} else {
-		rendered = Tera::one_off(&template, context, autoescape).unwrap();
+		tera = Tera::default();
 	}
+
+	if !autoescape {
+		tera.autoescape_on(vec![])
+	};
+
+	let rendered = tera.render_str(&template, context).unwrap();
 
 	println!("{rendered}");
 
