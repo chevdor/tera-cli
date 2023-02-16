@@ -10,6 +10,12 @@ use opts::*;
 use std::{fs::canonicalize, fs::File, io::Write, string::String};
 use tera::{Context, Tera};
 
+#[cfg(feature = "fluent")]
+use fluent_templates::{ArcLoader, FluentLoader, LanguageIdentifier};
+
+#[cfg(feature = "fluent")]
+use std::env;
+
 fn main() -> Result<(), String> {
 	env_logger::Builder::from_env(Env::default().default_filter_or("none")).init();
 	info!("Running {} v{}", crate_name!(), crate_version!());
@@ -29,6 +35,19 @@ fn main() -> Result<(), String> {
 		include = true;
 		path = canonicalize(opts.include_path.as_ref().unwrap()).unwrap();
 	}
+
+	#[cfg(feature = "fluent")]
+	let locale: LanguageIdentifier = match opts.locale.to_owned() {
+		Some(locale) => locale.parse(),
+		None => "und".parse(),
+	}
+	.unwrap();
+
+	#[cfg(feature = "fluent")]
+	let locales_path = match opts.locales_path.to_owned() {
+		Some(path) => path,
+		None => "./locales".into(),
+	};
 
 	let mut wrapped_context = wrapped_context::WrappedContext::new(opts);
 	wrapped_context.create_context();
@@ -60,6 +79,16 @@ fn main() -> Result<(), String> {
 
 	if !autoescape {
 		tera.autoescape_on(vec![])
+	};
+
+	#[cfg(feature = "fluent")]
+	if cfg!(feature = "fluent") {
+		let builder =
+			ArcLoader::builder(&locales_path, locale.clone()).customize(|bundle| bundle.set_use_isolating(false));
+		if let Ok(locale_loader) = builder.build() {
+			let ftls = FluentLoader::new(locale_loader).with_default_lang(locale);
+			tera.register_function("fluent", ftls)
+		}
 	};
 
 	let rendered = tera.render_str(&template, context).unwrap();
