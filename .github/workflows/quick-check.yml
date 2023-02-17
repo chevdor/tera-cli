@@ -49,9 +49,15 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: clippy
-          args: -- -D warnings
+          args: --all-features -- -D warnings
 
   quick_check-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        feature-flags:
+          - ''
+          - '--all-features'
     runs-on: ubuntu-latest
     steps:
       - name: Install Rust stable toolchain
@@ -66,9 +72,9 @@ jobs:
       - name: Cargo test
         uses: actions-rs/cargo@v1
         with:
-          command: test
+          command: test ${{ matrix.feature-flags }}
 
       - name: Cargo check
         uses: actions-rs/cargo@v1
         with:
-          command: check
+          command: check ${{ matrix.feature-flags }}
