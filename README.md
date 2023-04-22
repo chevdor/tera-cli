@@ -2,7 +2,9 @@
 
 ## Intro
 
-![tera cli logo 256](resources/logo/tera-cli-logo_256.png)
+<figure>
+<img src="resources/logo/tera-cli-logo_256.png" alt="tera cli logo 256" />
+</figure>
 
 [tera](https://github.com/Keats/tera) is a template engine written in Rust and inspired by Jinja2. It allows merging some data called `context data` into a template and produces a new output. This project, `tera-cli`, is a command line for the [tera template engine](https://github.com/Keats/tera).
 
@@ -186,61 +188,24 @@ Passing the `-a | --escape` flag allows escaping the content.
 
 ## Usage
 
-    teracli 0.2.2
-    chevdor <chevdor@gmail.com>
-    Command line utility for the tera templating engine. You need to provide a template using the tera
-    syntax as well as some data (various format are supported)
+    Command line utility for the tera templating engine. You need to provide a template using the tera syntax as well as some data (various format are supported)
 
-    USAGE:
-        tera [OPTIONS] --template <TEMPLATE> [CONTEXT]
+    Usage: tera [OPTIONS] --template <TEMPLATE> [CONTEXT]
 
-    ARGS:
-        <CONTEXT>    Location of the context data. This file can be of the following type: json |
-                     toml | yaml. If you prefer to pass the data as stdin, use `--stdin`
+    Arguments:
+      [CONTEXT]  Location of the context data. This file can be of the following type: json | toml | yaml. If you prefer to pass the data as stdin, use `--stdin`
 
-    OPTIONS:
-        -a, --escape
-                Auto-escape rendered content. This is useful for HTML output
-
-        -e, --env
-                If true, the current ENV will be appended to the data under the --env-key key
-
-            --env-first
-                By default, the context is made of the data you pass and the ENV is applied afterwards.
-                Setting this option will apply the ENV first. This is interesting if you prefer your
-                data to override the ENV
-
-            --env-key <ENV_KEY>
-                By default, if --env is set, the environment variables will be attached at the root of
-                the context. This is convenient but may end up conflicting with your data. To prevent
-                collisions, you can provide a custom key with this option
-
-            --env-only
-                If you want to solely use the ENV as context, you may pass this option. This will
-                prevent an error about no context being passed to be raised
-
-            --fail-on-collision
-                if you prefer your data to override the ENV
-
-        -h, --help
-                Print help information
-
-        -i, --include
-                This flag tells the command to parse all templates found in the same path where the
-                given template is located [aliases: inherit]
-
-            --include-path <INCLUDE_PATH>
-                Option to define a different path from which search and parse templates [aliases:
-                inherit-path]
-
-        -o, --out <OUT>
-                Optional output file. If not passed, using stdout
-
-        -s, --stdin
-                The context data can be passed using stdin
-
-        -t, --template <TEMPLATE>
-                Location of the template
-
-        -V, --version
-                Print version information
+    Options:
+      -t, --template <TEMPLATE>          Location of the template
+      -i, --include                      This flag tells the command to parse all templates found in the same path where the given template is located [aliases: inherit]
+          --include-path <INCLUDE_PATH>  Option to define a different path from which search and parse templates [aliases: inherit-path]
+      -s, --stdin                        The context data can be passed using stdin
+      -e, --env                          If true, the current ENV will be appended to the data under the --env-key key
+          --env-key <ENV_KEY>            By default, if --env is set, the environment variables will be attached at the root of the context. This is convenient but may end up conflicting with your data. To prevent collisions, you can provide a custom key with this option
+          --env-first                    By default, the context is made of the data you pass and the ENV is applied afterwards. Setting this option will apply the ENV first. This is interesting if you prefer your data to override the ENV
+          --fail-on-collision            if you prefer your data to override the ENV
+          --env-only                     If you want to solely use the ENV as context, you may pass this option. This will prevent an error about no context being passed to be raised
+      -o, --out <OUT>                    Optional output file. If not passed, using stdout
+      -a, --escape                       Auto-escape rendered content. This is useful for HTML output
+      -h, --help                         Print help
+      -V, --version                      Print version
