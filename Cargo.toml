@@ -7,9 +7,14 @@ name = "teracli"
 readme = "README.md"
 version = "0.2.4"
 
+[features]
+default = []
+fluent = ["fluent-templates"]
+
 [dependencies]
 clap = { version = "4", features = ["derive", "env", "unicode", "cargo"] }
 env_logger = "0.10"
+fluent-templates = { version = "0.8", optional = true, default-features = false, features = ["tera"]}
 log = "0.4"
 serde = "1.0"
 serde_json = { version = "1.0", optional = false }

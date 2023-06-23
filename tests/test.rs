@@ -47,6 +47,22 @@ mod cli_tests {
 			let assert = cmd.arg("-t").arg("data/basic/basic.tera").arg("data/basic/basic.toml").assert();
 			assert.success().stdout(predicate::str::contains("Bob likes orange"));
 		}
+
+		#[cfg(feature = "fluent")]
+		#[test]
+		fn it_proccess_fluent_functions() {
+			let mut cmd = Command::cargo_bin(env!("CARGO_BIN_EXE_tera")).unwrap();
+			let assert = cmd
+				.arg("-l")
+				.arg("en-US")
+				.arg("--locales-path")
+				.arg("data/locales/")
+				.arg("-t")
+				.arg("data/basic/fluent.tera")
+				.arg("data/basic/fluent.yaml")
+				.assert();
+			assert.success().stdout(predicate::str::contains("Hello World! Merhaba Dünya!"));
+		}
 	}
 
 	#[cfg(test)]

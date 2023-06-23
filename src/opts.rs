@@ -19,6 +19,16 @@ pub struct Opts {
 	#[clap(long, visible_alias = "inherit-path")]
 	pub include_path: Option<PathBuf>,
 
+	/// Option to set default locale used for Fluent localization functions.
+	#[cfg(feature = "fluent")]
+	#[clap(short, long)]
+	pub locale: Option<String>,
+
+	/// Option to define a path to Fluent resources used for localization.
+	#[cfg(feature = "fluent")]
+	#[clap(long, visible_alias = "locales-path")]
+	pub locales_path: Option<PathBuf>,
+
 	/// Location of the context data. This file can be of the following type:
 	/// json | toml | yaml. If you prefer to pass the data as stdin, use `--stdin`
 	#[clap(index = 1, required_unless_present_any = &["stdin", "env_only"], conflicts_with = "env_only")]

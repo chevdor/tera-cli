@@ -1,0 +1,1 @@
+{{ fluent(key="hello", name=en) }} {{ fluent(key="hello", lang="tr-TR", name=tr) }}
