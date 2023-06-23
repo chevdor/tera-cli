@@ -64,13 +64,12 @@ fn main() -> Result<(), String> {
 		rendered = Tera::one_off(&template, context, autoescape).unwrap();
 	}
 
-	println!("{rendered}");
-
 	if let Some(out_file) = output {
 		debug!("Saving to {}", out_file.display());
 		let mut file = File::create(out_file).expect("Failed opening output file");
-		return file.write_all(rendered.as_bytes()).map_err(|e| e.to_string());
+		file.write_all(rendered.as_bytes()).map_err(|e| e.to_string())
+	} else {
+		println!("{rendered}");
+		Ok(())
 	}
-
-	Ok(())
 }
