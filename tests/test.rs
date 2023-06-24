@@ -7,7 +7,7 @@ mod cli_tests {
 
 		#[test]
 		fn it_shows_help() {
-			let mut cmd = Command::cargo_bin(env!("CARGO_BIN_EXE_tera")).unwrap();
+			let mut cmd = Command::cargo_bin("tera").unwrap();
 			let assert = cmd.arg("--help").assert();
 			assert.success().code(0);
 		}
@@ -20,21 +20,21 @@ mod cli_tests {
 
 		#[test]
 		fn it_process_json_to_stdout() {
-			let mut cmd = Command::cargo_bin(env!("CARGO_BIN_EXE_tera")).unwrap();
+			let mut cmd = Command::cargo_bin("tera").unwrap();
 			let assert = cmd.arg("-t").arg("data/basic/basic.tera").arg("data/basic/basic.json").assert();
 			assert.success().stdout(predicate::str::contains("Bob likes orange"));
 		}
 
 		#[test]
 		fn it_process_yaml_to_stdout() {
-			let mut cmd = Command::cargo_bin(env!("CARGO_BIN_EXE_tera")).unwrap();
+			let mut cmd = Command::cargo_bin("tera").unwrap();
 			let assert = cmd.arg("-t").arg("data/basic/basic.tera").arg("data/basic/basic.yaml").assert();
 			assert.success().stdout(predicate::str::contains("Bob likes orange"));
 		}
 
 		#[test]
 		fn it_process_yaml_with_dashes() {
-			let mut cmd = Command::cargo_bin(env!("CARGO_BIN_EXE_tera")).unwrap();
+			let mut cmd = Command::cargo_bin("tera").unwrap();
 			let assert = cmd.arg("-t").arg("data/tests/dash-test.tera").arg("data/tests/dash-test.yaml").assert();
 			assert.success().stdout(predicate::str::contains(
 				"{\"sso.auth.success\":{\"description\":\"Authentification success\"}}",
@@ -43,7 +43,7 @@ mod cli_tests {
 
 		#[test]
 		fn it_process_toml_to_stdout() {
-			let mut cmd = Command::cargo_bin(env!("CARGO_BIN_EXE_tera")).unwrap();
+			let mut cmd = Command::cargo_bin("tera").unwrap();
 			let assert = cmd.arg("-t").arg("data/basic/basic.tera").arg("data/basic/basic.toml").assert();
 			assert.success().stdout(predicate::str::contains("Bob likes orange"));
 		}
@@ -74,7 +74,7 @@ mod cli_tests {
 
 		#[test]
 		fn it_process_json_stdin() {
-			let mut cmd = Command::cargo_bin(env!("CARGO_BIN_EXE_tera")).unwrap();
+			let mut cmd = Command::cargo_bin("tera").unwrap();
 			let stdin = fs::read_to_string("data/basic/basic.json").unwrap();
 
 			let assert = cmd.write_stdin(stdin).arg("-t").arg("data/basic/basic.tera").arg("--stdin").assert();
@@ -83,7 +83,7 @@ mod cli_tests {
 
 		#[test]
 		fn it_process_toml_stdin() {
-			let mut cmd = Command::cargo_bin(env!("CARGO_BIN_EXE_tera")).unwrap();
+			let mut cmd = Command::cargo_bin("tera").unwrap();
 			let stdin = fs::read_to_string("data/basic/basic.toml").unwrap();
 
 			let assert = cmd.write_stdin(stdin).arg("-t").arg("data/basic/basic.tera").arg("--stdin").assert();
@@ -92,7 +92,7 @@ mod cli_tests {
 
 		#[test]
 		fn it_process_yaml_stdin() {
-			let mut cmd = Command::cargo_bin(env!("CARGO_BIN_EXE_tera")).unwrap();
+			let mut cmd = Command::cargo_bin("tera").unwrap();
 			let stdin = fs::read_to_string("data/basic/basic.yaml").unwrap();
 
 			let assert = cmd.write_stdin(stdin).arg("-t").arg("data/basic/basic.tera").arg("--stdin").assert();
@@ -107,7 +107,7 @@ mod cli_tests {
 
 		#[test]
 		fn it_process_env_sample() {
-			let mut cmd = Command::cargo_bin(env!("CARGO_BIN_EXE_tera")).unwrap();
+			let mut cmd = Command::cargo_bin("tera").unwrap();
 			let assert = cmd
 				.arg("-t")
 				.arg("data/env-basic/env-sample.tera")
@@ -121,7 +121,7 @@ mod cli_tests {
 
 		#[test]
 		fn it_process_env_key_sample() {
-			let mut cmd = Command::cargo_bin(env!("CARGO_BIN_EXE_tera")).unwrap();
+			let mut cmd = Command::cargo_bin("tera").unwrap();
 			let assert = cmd
 				.arg("-t")
 				.arg("data/env-key/env-key.tera")
@@ -137,7 +137,7 @@ mod cli_tests {
 
 		#[test]
 		fn it_fetches_env() {
-			let mut cmd = Command::cargo_bin(env!("CARGO_BIN_EXE_tera")).unwrap();
+			let mut cmd = Command::cargo_bin("tera").unwrap();
 			let assert = cmd
 				.arg("-t")
 				.arg("data/env-basic/env-count.tera")
@@ -157,7 +157,7 @@ mod cli_tests {
 
 		#[test]
 		fn it_process_json_with_collision() {
-			let mut cmd = Command::cargo_bin(env!("CARGO_BIN_EXE_tera")).unwrap();
+			let mut cmd = Command::cargo_bin("tera").unwrap();
 			let assert = cmd
 				.arg("--env")
 				.arg("-t")
@@ -170,7 +170,7 @@ mod cli_tests {
 
 		#[test]
 		fn it_process_json_with_collision_and_env_first() {
-			let mut cmd = Command::cargo_bin(env!("CARGO_BIN_EXE_tera")).unwrap();
+			let mut cmd = Command::cargo_bin("tera").unwrap();
 			let assert = cmd
 				.arg("--env")
 				.arg("--env-first")
@@ -184,7 +184,7 @@ mod cli_tests {
 
 		#[test]
 		fn it_fails_on_collision() {
-			let mut cmd = Command::cargo_bin(env!("CARGO_BIN_EXE_tera")).unwrap();
+			let mut cmd = Command::cargo_bin("tera").unwrap();
 			let assert = cmd
 				.arg("--env")
 				.arg("--fail-on-collision")
@@ -204,7 +204,7 @@ mod cli_tests {
 
 		#[test]
 		fn it_process_big_json_v12_nodoc() {
-			let mut cmd = Command::cargo_bin(env!("CARGO_BIN_EXE_tera")).unwrap();
+			let mut cmd = Command::cargo_bin("tera").unwrap();
 			let assert = cmd
 				.arg("--env")
 				.arg("-t")
@@ -216,7 +216,7 @@ mod cli_tests {
 
 		#[test]
 		fn it_process_big_json_v12_with_doc() {
-			let mut cmd = Command::cargo_bin(env!("CARGO_BIN_EXE_tera")).unwrap();
+			let mut cmd = Command::cargo_bin("tera").unwrap();
 			let assert = cmd
 				.arg("--env")
 				.arg("-t")
@@ -229,7 +229,7 @@ mod cli_tests {
 
 		#[test]
 		fn it_process_big_json_v13() {
-			let mut cmd = Command::cargo_bin(env!("CARGO_BIN_EXE_tera")).unwrap();
+			let mut cmd = Command::cargo_bin("tera").unwrap();
 			let assert = cmd
 				.arg("--env")
 				.arg("-t")
@@ -246,7 +246,7 @@ mod cli_tests {
 
 		#[test]
 		fn it_makes_markdown_from_cargo_toml() {
-			let mut cmd = Command::cargo_bin(env!("CARGO_BIN_EXE_tera")).unwrap();
+			let mut cmd = Command::cargo_bin("tera").unwrap();
 			let assert = cmd.arg("-t").arg("data/cargo-toml/cargo-toml.tera").arg("Cargo.toml").assert();
 			assert.success().code(0);
 		}
