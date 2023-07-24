@@ -80,3 +80,23 @@ jobs:
         with:
           command: check
           args: ${{ matrix.feature-flags }}
+
+  quick_check-flake:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v4
+
+      - name: Cache Nix dependencies
+        uses: DeterminateSystems/magic-nix-cache-action@v2
+
+      - uses: actions/checkout@v2
+
+      - name: Check flake
+        run: nix flake check
+
+      - name: Build flake
+        run: nix build
+
+      - name: Test run flake
+        run: nix run . -- --version
