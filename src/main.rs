@@ -1,13 +1,17 @@
+#![deny(clippy::expect_used)]
+#![deny(clippy::unwrap_used)]
+
 mod opts;
 mod template;
 mod wrapped_context;
 
 use crate::template::Template;
 use clap::{crate_name, crate_version, Parser};
+use color_eyre::eyre::{Context as EyreContext, ContextCompat, Result};
 use env_logger::Env;
 use log::{debug, info, trace};
 use opts::*;
-use std::{fs::canonicalize, fs::File, io::Write, string::String};
+use std::{fs::canonicalize, fs::File, io::Write};
 use tera::{Context, Tera};
 
 #[cfg(feature = "fluent")]
@@ -16,66 +20,49 @@ use fluent_templates::{ArcLoader, FluentLoader, LanguageIdentifier};
 #[cfg(feature = "fluent")]
 use std::env;
 
-fn main() -> Result<(), String> {
+fn main() -> Result<()> {
+	color_eyre::install()?;
+
 	env_logger::Builder::from_env(Env::default().default_filter_or("none")).init();
 	info!("Running {} v{}", crate_name!(), crate_version!());
 
-	let opts: Opts = Opts::parse();
+	let opts = Opts::parse();
 	debug!("opts:\n{:#?}", opts);
 
-	let template = Template::load(&opts.template).expect("Failed reading the template");
+	let template = Template::load(&opts.template).context("failed to read the template")?;
 	trace!("template:\n{}", template);
 
 	let autoescape = opts.autoescape;
-	let output = opts.out.to_owned();
+	let output = opts.out.clone();
 	let mut include = opts.include;
-	let mut path = canonicalize(&opts.template).unwrap();
+	let mut path = canonicalize(&opts.template).context("failed to get absolute path to `template`")?;
 
-	if opts.include_path.is_some() {
+	if let Some(include_path) = &opts.include_path {
 		include = true;
-		path = canonicalize(opts.include_path.as_ref().unwrap()).unwrap();
+		path = canonicalize(include_path).context("failed to get absolute path to `include`")?;
 	}
 
 	#[cfg(feature = "fluent")]
-	let locale: LanguageIdentifier = match opts.locale.to_owned() {
-		Some(locale) => locale.parse(),
-		None => "und".parse(),
-	}
-	.unwrap();
+	let locale: LanguageIdentifier = opts.locale.as_deref().unwrap_or("und").parse().context("failed to parse locale")?;
 
 	#[cfg(feature = "fluent")]
-	let locales_path = match opts.locales_path.to_owned() {
-		Some(path) => path,
-		None => "./locales".into(),
-	};
+	let locales_path = opts.locales_path.clone().unwrap_or_else(|| "./locales".into());
 
 	let mut wrapped_context = wrapped_context::WrappedContext::new(opts);
-	wrapped_context.create_context();
+	wrapped_context.create_context().context("failed to create context")?;
 
 	let context: &Context = wrapped_context.context();
 	trace!("context:\n{:#?}", context);
 
-	let mut tera: Tera;
+	let mut tera = if include {
+		let dir = if path.is_file() { path.parent().context("failed to get parent directory")? } else { &path };
 
-	if include {
-		let mut dir = path.to_str().unwrap();
+		let glob = format!("{}/**/*", dir.to_str().context("invalid UTF8 string")?);
 
-		if path.is_file() {
-			dir = path.parent().unwrap().to_str().unwrap();
-		}
-
-		let glob = dir.to_owned() + "/**/*";
-
-		tera = match Tera::new(&glob) {
-			Ok(t) => t,
-			Err(e) => {
-				println!("Parsing error(s): {e}");
-				::std::process::exit(1);
-			}
-		};
+		Tera::new(&glob)?
 	} else {
-		tera = Tera::default();
-	}
+		Tera::default()
+	};
 
 	if !autoescape {
 		tera.autoescape_on(vec![])
@@ -87,18 +74,19 @@ fn main() -> Result<(), String> {
 			ArcLoader::builder(&locales_path, locale.clone()).customize(|bundle| bundle.set_use_isolating(false));
 		if let Ok(locale_loader) = builder.build() {
 			let ftls = FluentLoader::new(locale_loader).with_default_lang(locale);
-			tera.register_function("fluent", ftls)
+			tera.register_function("fluent", ftls);
 		}
 	};
 
-	let rendered = tera.render_str(&template, context).unwrap();
+	let rendered = tera.render_str(&template, context).context("failed to render")?;
 
 	if let Some(out_file) = output {
 		debug!("Saving to {}", out_file.display());
-		let mut file = File::create(out_file).expect("Failed opening output file");
-		file.write_all(rendered.as_bytes()).map_err(|e| e.to_string())
+		let mut file = File::create(out_file).context("failed to open output file")?;
+		file.write_all(rendered.as_bytes()).context("failed to write to output file")?;
 	} else {
 		println!("{rendered}");
-		Ok(())
 	}
+
+	Ok(())
 }

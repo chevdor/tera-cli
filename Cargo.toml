@@ -13,6 +13,7 @@ fluent = ["fluent-templates"]
 
 [dependencies]
 clap = { version = "4", features = ["derive", "env", "unicode", "cargo"] }
+color-eyre = "0.5"
 env_logger = "0.10"
 fluent-templates = { version = "0.8", optional = true, default-features = false, features = ["tera"]}
 log = "0.4"

@@ -250,5 +250,12 @@ mod cli_tests {
 			let assert = cmd.arg("-t").arg("data/cargo-toml/cargo-toml.tera").arg("Cargo.toml").assert();
 			assert.success().code(0);
 		}
+
+		#[test]
+		fn it_handles_error() {
+			let mut cmd = Command::cargo_bin("tera").unwrap();
+			let assert = cmd.arg("-t").arg("data/throw/throw.tera").arg("data/throw/throw.toml").assert();
+			assert.failure().code(1);
+		}
 	}
 }
