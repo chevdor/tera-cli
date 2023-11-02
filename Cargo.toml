@@ -5,7 +5,7 @@ edition = "2021"
 license = "MIT"
 name = "teracli"
 readme = "README.md"
-version = "0.2.4"
+version = "0.2.5"
 
 [features]
 default = []
@@ -13,7 +13,7 @@ fluent = ["fluent-templates"]
 
 [dependencies]
 clap = { version = "4", features = ["derive", "env", "unicode", "cargo"] }
-color-eyre = "0.5"
+color-eyre = "0.6"
 env_logger = "0.10"
 fluent-templates = { version = "0.8", optional = true, default-features = false, features = ["tera"]}
 log = "0.4"
@@ -21,7 +21,7 @@ serde = "1.0"
 serde_json = { version = "1.0", optional = false }
 serde_yaml = { version = "0.9", optional = false }
 tera = "1.18"
-toml = { version = "0.7", optional = false }
+toml = { version = "0.8", optional = false }
 
 [dev-dependencies]
 assert_cmd = "2.0"
