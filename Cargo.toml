@@ -20,7 +20,7 @@ log = "0.4"
 serde = "1.0"
 serde_json = { version = "1.0", optional = false }
 serde_yaml = { version = "0.9", optional = false }
-tera = "1.18"
+tera = "1.19"
 toml = { version = "0.8", optional = false }
 
 [dev-dependencies]
