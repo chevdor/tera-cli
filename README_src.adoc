@@ -37,10 +37,10 @@ and a call such as `tera --template template.tera data.json` will produce:
 
 <ul>
 <li><a href="http://example.org/alice">Alice
-    Alice likes red green yellow 
+    Alice likes red green yellow
     </a></li>
 <li><a href="http://example.org/bob">Bob
-    Bob likes orange 
+    Bob likes orange
     </a></li>
 
 </ul>
