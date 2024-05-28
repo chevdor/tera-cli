@@ -36,7 +36,7 @@ assets = [["target/release/tera", "usr/bin/", "755"]]
 copyright = "2021, Wilfried Kopp aka. Chevdor <chevdor@gmail.com>"
 depends = "$auto"
 extended-description = """\
-tera-ci offers powerful features related to your environment variables, allowing you to control the output **both** from the context data you pass but also from the ENV variables set on your system."""
+tera-cli offers powerful features related to your environment variables, allowing you to control the output **both** from the context data you pass but also from the ENV variables set on your system."""
 license-file = ["LICENSE", "0"]
 maintainer = "Wilfried Kopp aka. Chevdor <chevdor@gmail.com>"
 priority = "optional"
