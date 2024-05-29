@@ -467,6 +467,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "fluent-template-macros"
+version = "0.9.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "77d2bcae1f3ec390c50161fcf130d3228750e9ecf965618584e046d884199b83"
+dependencies = [
+ "flume",
+ "ignore",
+ "once_cell",
+ "proc-macro2",
+ "quote",
+ "syn",
+ "unic-langid",
+]
+
+[[package]]
 name = "fluent-templates"
 version = "0.9.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -477,8 +492,10 @@ dependencies = [
  "fluent-bundle",
  "fluent-langneg",
  "fluent-syntax",
+ "fluent-template-macros",
  "flume",
  "heck",
+ "ignore",
  "intl-memoizer",
  "log",
  "once_cell",
@@ -986,9 +1003,9 @@ checksum = "719b953e2095829ee67db738b3bfa9fa368c94900df327b3f07fe6e794d2fe1f"
 
 [[package]]
 name = "rustc-hash"
-version = "1.2.0"
+version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3450ed37fe9609abb6bc3b8891b6e078404e4c53c7332350e2e15126a95229bf"
+checksum = "08d43f7aa6b08d49f382cde6a7982047c3426db949b1424bc4b7ec9ae12c6ce2"
 
 [[package]]
 name = "ryu"
@@ -1173,6 +1190,7 @@ dependencies = [
 name = "teracli"
 version = "0.3.0"
 dependencies = [
+ "anstream",
  "assert_cmd",
  "clap",
  "color-eyre",
@@ -1225,9 +1243,9 @@ dependencies = [
 
 [[package]]
 name = "tinystr"
-version = "0.7.5"
+version = "0.7.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "83c02bf3c538ab32ba913408224323915f4ef9a6d61c0e85d493f355921c0ece"
+checksum = "9117f5d4db391c1cf6927e7bea3db74b9a1c1add8f7eda9ffd5364f40f57b82f"
 dependencies = [
  "displaydoc",
 ]
