@@ -10,12 +10,12 @@ version = "0.3.0"
 [features]
 default = []
 fluent = ["fluent-templates"]
+env_logger = []
 
 [dependencies]
-anstream = "0.6.14"
 clap = { version = "4", features = ["derive", "env", "unicode", "cargo"] }
 color-eyre = "0.6"
-env_logger = "0.11"
+env_logger = "0.11.3"
 fluent-templates = { version = "0.9", optional = true, default-features = false, features = ["tera", "use-ignore"] }
 log = "0.4"
 serde = "1.0"
