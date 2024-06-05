@@ -24,7 +24,7 @@ jobs:
           override: true
           components: rustfmt
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Cargo fmt
         uses: actions-rs/cargo@v1
@@ -43,7 +43,7 @@ jobs:
           override: true
           components: clippy
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Cargo clippy
         uses: actions-rs/cargo@v1
@@ -67,7 +67,7 @@ jobs:
           toolchain: stable
           override: true
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Cargo test
         uses: actions-rs/cargo@v1
@@ -90,7 +90,7 @@ jobs:
       - name: Cache Nix dependencies
         uses: DeterminateSystems/magic-nix-cache-action@v2
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Check flake
         run: nix flake check

@@ -18,7 +18,7 @@ jobs:
           toolchain: nightly
           override: true
           components: rustfmt, clippy
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Install cargo deb
         uses: actions-rs/cargo@v1
         with:
@@ -40,9 +40,9 @@ jobs:
     env:
       TARGET_DIR: target/release
 
-    runs-on: macos-10.15
+    runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Get Release Version
@@ -119,7 +119,7 @@ jobs:
       release_url: ${{ steps.create-release.outputs.html_url }}
       asset_upload_url: ${{ steps.create-release.outputs.upload_url }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Get Release Version
@@ -170,7 +170,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: ["create_draft"]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Get Release Version
         run: |
           echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
