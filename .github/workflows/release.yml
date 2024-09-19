@@ -31,7 +31,7 @@ jobs:
           cargo deb -p teracli -o "tera-cli_linux_amd64.deb"
 
       - name: Upload Linux artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: linux
           path: "tera-cli_linux_amd64.deb"
@@ -81,7 +81,7 @@ jobs:
           echo "SHA256=$SHA256" >> $GITHUB_ENV
 
       - name: Upload MacOS artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: macos
           path: |
