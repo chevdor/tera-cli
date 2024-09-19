@@ -150,8 +150,14 @@ jobs:
 
       - name: Render release notes
         run: |
+          export X86_64_GNU_TGZ_URL="https://github.com/chevdor/tera-cli/releases/download/${{ env.RELEASE_VERSION }}/tera-cli-x86_64-unknown-linux-gnu.tar.gz"
+          export X86_64_MUSL_TGZ_URL="https://github.com/chevdor/tera-cli/releases/download/${{ env.RELEASE_VERSION }}/tera-cli-x86_64-unknown-linux-musl.tar.gz"
+          export AARCH64_GNU_TGZ_URL="https://github.com/chevdor/tera-cli/releases/download/${{ env.RELEASE_VERSION }}/tera-cli-aarch64-unknown-linux-gnu.tar.gz"
+          export AARCH64_MUSL_TGZ_URL="https://github.com/chevdor/tera-cli/releases/download/${{ env.RELEASE_VERSION }}/tera-cli-aarch64-unknown-linux-musl.tar.gz"
           export DEBIAN_URL="https://github.com/chevdor/tera-cli/releases/download/${{ env.RELEASE_VERSION }}/tera-cli_linux_amd64.deb"
           export MACOS_TGZ_URL="https://github.com/chevdor/tera-cli/releases/download/${{ env.RELEASE_VERSION }}/tera-macos-${{ env.RELEASE_VERSION }}.tar.gz"
+          export WINDOWS_ZIP_URL="https://github.com/chevdor/tera-cli/releases/download/${{ env.RELEASE_VERSION }}/tera-cli-aarch64-unknown-linux-musl.tar.gz"
+
           export CHANGELOG=$(cat changelog.md)
           tera --env --env-only --template templates/release.md > RELEASE_NOTES.md
 
