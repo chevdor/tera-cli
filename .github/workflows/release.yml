@@ -249,11 +249,14 @@ jobs:
 
       - name: Upload x86_64
         uses: taiki-e/upload-rust-binary-action@v1
+        id: upload-x86_64
         with:
           bin: tera
           target: x86_64-apple-darwin
           archive: tera-cli-$target
-          checksum: sha512
+          # SHA256 is used for homebrew
+          # https://docs.brew.sh/Cask-Cookbook#stanza-sha256
+          checksum: sha256,sha512
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload aarch64
@@ -264,3 +267,37 @@ jobs:
           archive: tera-cli-$target
           checksum: sha512
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Add tera to PATH
+        run: |
+          mv "target/x86_64-apple-darwin/release/tera" /usr/local/bin
+
+      - name: Output values for Formula templates
+        id: output-values-for-templates
+        run: |
+          echo "raw_version=${GITHUB_REF_NAME:1}" >> $GITHUB_OUTPUT
+
+          x86_64_sha256="$(cut -d' ' -f1 ${{ steps.upload-x86_64.outputs.sha256 }})"
+          echo "x86_64_sha256=$x86_64_sha256" >> $GITHUB_OUTPUT
+
+      # We do that before hecking out master (in case we were not in master already)
+      - name: Prepare new Formula
+        env:
+          NAME: Tera
+          DESCRIPTION: "A command line utility written in Rust to render templates using the tera templating engine"
+          HOMEPAGE: ${{ github.server_url }}/${{ github.repository }}
+          REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+          ARCHIVE: tera-cli-x86_64-apple-darwin.tar.gz
+          SHA256: ${{ steps.output-values-for-templates.outputs.x86_64_sha256 }}
+          VERSION: ${{ steps.output-values-for-templates.outputs.raw_version }}
+        run: |
+          tera --version
+          tera --template templates/formula.rb --env-only > $HOME/tera.rb
+          cat $HOME/tera.rb
+
+      - name: Update Homebrew Formula
+        run: |
+          cp -f $HOME/tera.rb Formula/tera.rb
+          git config --global user.name 'TeraBot'
+          git config --global user.email 'chevdor@users.noreply.github.com'
+          git commit Formula/tera.rb -m "build: new homebrew formula for ${GITHUB_REF_NAME}"

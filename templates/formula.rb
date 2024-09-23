@@ -4,7 +4,7 @@
 class {{ NAME }} < Formula
   desc "{{ DESCRIPTION }}"
   homepage "{{ HOMEPAGE }}"
-  url "{{ SITE }}/{{ REPO }}/releases/download/v{{ VERSION }}/{{ ARCHIVE | default(value=BIN ~"-macos-v" ~ VERSION) }}.tar.gz"
+  url "{{ REPO_URL }}/releases/download/v{{ VERSION }}/{{ ARCHIVE }}"
   sha256 "{{ SHA256 }}"
   version "{{ VERSION }}"
 
