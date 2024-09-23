@@ -150,10 +150,22 @@ jobs:
 
       - name: Render release notes
         run: |
+          x86_64_prefix='tera-cli-x86_64-'
+
+          export X86_64_GNU_TGZ="${x86_64_prefix}unknown-linux-gnu.tar.gz"
+          export X86_64_MUSL_TGZ="${X86_64_GNU_TGZ//gnu/musl}"
+
+          export AARCH64_GNU_TGZ="${X86_64_GNU_TGZ//x86_64/aarch64}"
+          export AARCH64_MUSL_TGZ="${X86_64_MUSL_TGZ//x86_64/aarch64}"
+
           export DEBIAN_URL="https://github.com/chevdor/tera-cli/releases/download/${{ env.RELEASE_VERSION }}/tera-cli_linux_amd64.deb"
           export MACOS_TGZ_URL="https://github.com/chevdor/tera-cli/releases/download/${{ env.RELEASE_VERSION }}/tera-macos-${{ env.RELEASE_VERSION }}.tar.gz"
+
           export CHANGELOG=$(cat changelog.md)
           tera --env --env-only --template templates/release.md > RELEASE_NOTES.md
+        env:
+          ARCHIVE_URL_PREFIX: ${{ github.server_url }}/${{ github.repository }}/releases/download/${{ env.RELEASE_VERSION }}/
+          WINDOWS_ZIP: tera-cli-x86_64-pc-windows-msvc.zip
 
       - name: Create Release
         id: create-release
@@ -197,3 +209,32 @@ jobs:
           asset_path: "macos/tera-macos-${{ env.RELEASE_VERSION }}.tar.gz"
           asset_name: "tera-macos-${{ env.RELEASE_VERSION }}.tar.gz"
           asset_content_type: application/gzip
+
+  publish-linux-and-windowns-binaries:
+    needs: ["create_draft"]
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+          - os: ubuntu-latest
+            target: aarch64-unknown-linux-gnu
+          - os: ubuntu-latest
+            target: aarch64-unknown-linux-musl
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upload Binarise
+        uses: taiki-e/upload-rust-binary-action@v1
+        with:
+          bin: tera
+          target: ${{ matrix.target }}
+          archive: tera-cli-$target
+          checksum: sha512
+          token: ${{ secrets.GITHUB_TOKEN }}
