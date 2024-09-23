@@ -36,83 +36,8 @@ jobs:
           name: linux
           path: "tera-cli_linux_amd64.deb"
 
-  macos:
-    env:
-      TARGET_DIR: target/release
-
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Get Release Version
-        run: |
-          echo GITHUB_REF=$GITHUB_REF
-          RELEASE_VERSION=${GITHUB_REF#refs/*/}
-          RAW_VERSION=${RELEASE_VERSION:1}
-          echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
-          echo "RAW_VERSION=$RAW_VERSION" >> $GITHUB_ENV
-          echo "SHORT_SHA=${GITHUB_SHA::8}" >> $GITHUB_ENV
-
-      - name: Install latest nightly
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: nightly
-          override: true
-          components: rustfmt, clippy
-
-      - name: Check tooling
-        shell: bash
-        run: |
-          tar --version
-          shasum --version
-
-      - name: Build MacOS binary
-        shell: bash
-        run: |
-          cargo build --release
-          cp "${{ env.TARGET_DIR }}/tera" /usr/local/bin
-
-      - name: Compress & sha256
-        run: |
-          tar -czf ${{ env.TARGET_DIR }}/tera-macos-${{ env.RELEASE_VERSION }}.tar.gz -C ${{ env.TARGET_DIR }} tera
-          SHA256=$(shasum -a 256 ${{ env.TARGET_DIR }}/tera-macos-${{ env.RELEASE_VERSION }}.tar.gz | awk '{ print $1}' | tee ${{ env.TARGET_DIR }}/tera-macos-${{ env.RELEASE_VERSION }}.tar.gz.sha256)
-          echo SHA256: $SHA256
-          echo "SHA256=$SHA256" >> $GITHUB_ENV
-
-      - name: Upload MacOS artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: macos
-          path: |
-            ${{ env.TARGET_DIR }}/tera
-            ${{ env.TARGET_DIR }}/tera-macos-${{ env.RELEASE_VERSION }}.tar.gz
-            ${{ env.TARGET_DIR }}/tera-macos-${{ env.RELEASE_VERSION }}.tar.gz.sha256
-
-      # We do that before checking out master (in case we were not in master already)
-      - name: Prepare new Formula
-        env:
-          NAME: Tera
-          DESCRIPTION: "A command line utility written in Rust to render templates using the tera templating engine"
-          SITE: https://github.com
-          REPO: chevdor/tera-cli
-          SHA256: ${{env.SHA256}}
-          VERSION: ${{env.RAW_VERSION}}
-        run: |
-          tera --version
-          tera --template templates/formula.rb --env-only > $HOME/tera.rb
-          cat $HOME/tera.rb
-
-      - name: Update Homebrew Formula
-        run: |
-          cp -f $HOME/tera.rb Formula/tera.rb
-          git config --global user.name 'TeraBot'
-          git config --global user.email 'chevdor@users.noreply.github.com'
-          git commit Formula/tera.rb -m "build: new homebrew formula for ${{ env.RELEASE_VERSION }}"
-          git push origin HEAD:master
-
   create_draft:
-    needs: ["linux", "macos"]
+    needs: ["linux"]
     name: Create Draft
     runs-on: ubuntu-latest
     outputs:
@@ -179,7 +104,7 @@ jobs:
           body_path: ./RELEASE_NOTES.md
           draft: true
 
-  publish-binaries:
+  publish-debian-package:
     runs-on: ubuntu-latest
     needs: ["create_draft"]
     steps:
@@ -200,16 +125,6 @@ jobs:
           asset_path: "linux/tera-cli_linux_amd64.deb"
           asset_name: "tera-cli_linux_amd64.deb"
           asset_content_type: application/vnd.debian.binary-package
-
-      - name: Upload MacOS archive
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create_draft.outputs.asset_upload_url }}
-          asset_path: "macos/tera-macos-${{ env.RELEASE_VERSION }}.tar.gz"
-          asset_name: "tera-macos-${{ env.RELEASE_VERSION }}.tar.gz"
-          asset_content_type: application/gzip
 
   publish-linux-and-windowns-binaries:
     needs: ["create_draft"]
