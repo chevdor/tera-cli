@@ -12,7 +12,8 @@ Download the binary for your OS from below:
     - [aarch64 musl]({{ ARCHIVE_URL_PREFIX ~ AARCH64_MUSL_TGZ }})
     - [Debian package]({{ DEBIAN_URL }})
 - **MacOS**
-    - [Archive]({{ MACOS_TGZ_URL }})
+    - [x86_64]({{ ARCHIVE_URL_PREFIX ~ X86_64_MACOS_TGZ }})
+    - [aarch64]({{ ARCHIVE_URL_PREFIX ~ AARCH64_MACOS_TGZ }})
 - **Windows**
     - [Archive]({{ ARCHIVE_URL_PREFIX ~ WINDOWS_ZIP }})
 
