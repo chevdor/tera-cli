@@ -176,11 +176,12 @@ jobs:
 
       - name: Upload aarch64
         uses: taiki-e/upload-rust-binary-action@v1
+        id: upload-aarch64
         with:
           bin: tera
           target: aarch64-apple-darwin
           archive: tera-cli-$target
-          checksum: sha512
+          checksum: sha256,sha512
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Add tera to PATH
@@ -194,6 +195,8 @@ jobs:
 
           x86_64_sha256="$(cut -d' ' -f1 ${{ steps.upload-x86_64.outputs.sha256 }})"
           echo "x86_64_sha256=$x86_64_sha256" >> $GITHUB_OUTPUT
+          aarch64_sha256="$(cut -d' ' -f1 ${{ steps.upload-aarch64.outputs.sha256 }})"
+          echo "aarch64_sha256=$aarch64_sha256" >> $GITHUB_OUTPUT
 
       # We do that before hecking out master (in case we were not in master already)
       - name: Prepare new Formula
@@ -202,8 +205,8 @@ jobs:
           DESCRIPTION: "A command line utility written in Rust to render templates using the tera templating engine"
           HOMEPAGE: ${{ github.server_url }}/${{ github.repository }}
           REPO_URL: ${{ github.server_url }}/${{ github.repository }}
-          ARCHIVE: tera-cli-x86_64-apple-darwin.tar.gz
-          SHA256: ${{ steps.output-values-for-templates.outputs.x86_64_sha256 }}
+          X86_64_SHA256: ${{ steps.output-values-for-templates.outputs.x86_64_sha256 }}
+          AARCH64_SHA256: ${{ steps.output-values-for-templates.outputs.aarch64_sha256 }}
           VERSION: ${{ steps.output-values-for-templates.outputs.raw_version }}
         run: |
           tera --version
@@ -216,3 +219,4 @@ jobs:
           git config --global user.name 'TeraBot'
           git config --global user.email 'chevdor@users.noreply.github.com'
           git commit Formula/tera.rb -m "build: new homebrew formula for ${GITHUB_REF_NAME}"
+          git push origin HEAD:master
