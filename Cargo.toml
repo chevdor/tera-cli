@@ -9,6 +9,7 @@ version = "0.4.0"
 
 [features]
 default = []
+full = ["fluent", "locale"]
 fluent = ["fluent-templates"]
 locale = ["tera/date-locale"]
 env_logger = []
