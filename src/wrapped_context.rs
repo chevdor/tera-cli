@@ -25,6 +25,7 @@ pub enum SupportedType {
 	Json,
 	Toml,
 	Yaml,
+	Env,
 }
 
 impl WrappedContext {
@@ -71,6 +72,17 @@ impl WrappedContext {
 		}
 
 		Ok(())
+	}
+
+	pub fn append_env_file(&mut self, str: &str) -> Result<()> {
+    debug!("Appending env file");
+    let env_cursor = std::io::Cursor::new(str);
+    for item in dotenvy::from_read_iter(env_cursor) {
+        let (k, v) = item.context("Failed to parse .env file line")?;
+        self.handle_collision("env", &k, &v);
+    }
+
+    Ok(())
 	}
 
 	fn handle_collision<K, V>(&mut self, from: &str, k: K, v: V)
@@ -138,6 +150,13 @@ impl WrappedContext {
 			debug!("not yaml");
 		}
 
+    let env_cursor = std::io::Cursor::new(str);  // Create a reader from the string
+    if dotenvy::from_read_iter(env_cursor).all(|item| item.is_ok()) {
+        return Some(SupportedType::Env);
+    } else {
+        debug!("not env");
+    }
+		
 		None
 	}
 
@@ -158,12 +177,13 @@ impl WrappedContext {
 				Some(SupportedType::Json) if !input.is_empty() => self.append_json(&input),
 				Some(SupportedType::Toml) if !input.is_empty() => self.append_toml(&input),
 				Some(SupportedType::Yaml) if !input.is_empty() => self.append_yaml(&input),
+				Some(SupportedType::Env) if !input.is_empty() => self.append_env_file(&input),
 				_ => Ok(()),
 			}
 			.context("failed to append stdin to context")?;
 		} else if let Some(context_file) = &self.opts.context {
 			let input = fs::read_to_string(context_file).context("failed to read context file")?;
-
+			
 			match context_file.extension() {
 				Some(ext) if ext == "json" => self.append_json(&input),
 				Some(ext) if ext == "toml" => self.append_toml(&input),

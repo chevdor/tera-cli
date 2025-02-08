@@ -30,7 +30,8 @@ pub struct Opts {
 	pub locales_path: Option<PathBuf>,
 
 	/// Location of the context data. This file can be of the following type:
-	/// json | toml | yaml. If you prefer to pass the data as stdin, use `--stdin`
+	/// json | toml | yaml. If you prefer to pass the data as stdin, use `--stdin`.
+	/// On stdin, .env files are also supported.
 	#[clap(index = 1, required_unless_present_any = &["stdin", "env_only"], conflicts_with = "env_only")]
 	pub context: Option<PathBuf>,
 

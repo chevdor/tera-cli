@@ -98,6 +98,19 @@ mod cli_tests {
 			let assert = cmd.write_stdin(stdin).arg("-t").arg("data/basic/basic.tera").arg("--stdin").assert();
 			assert.success().stdout(predicate::str::contains("Bob likes orange"));
 		}
+
+		#[test]
+		fn it_process_env_stdin() {
+			let mut cmd = Command::cargo_bin("tera").unwrap();
+			let stdin = fs::read_to_string("data/env-file/.env.file").unwrap();
+
+			let assert = cmd.write_stdin(stdin).arg("-t").arg("data/env-file/env-file.tera").arg("--stdin").assert();
+
+			assert.success().stdout(
+				predicate::str::contains("Hello **chevdor**")
+				.and(predicate::str::contains("Home: /home/foobarqux"))
+				.and(predicate::str::contains("Editor: emacs?")));
+		}		
 	}
 
 	#[cfg(test)]
