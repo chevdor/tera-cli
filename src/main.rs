@@ -55,11 +55,11 @@ fn main() -> Result<()> {
 	trace!("context:\n{:#?}", context);
 
 	let mut tera = if include {
-		let dir = if path.is_file() { path.parent().context("failed to get parent directory")? } else { &path };
+		let dir = if path.is_file() { path.parent().context("failed to get parent directory")?.to_path_buf() } else { path };
 
-		let glob = format!("{}/**/*", dir.to_str().context("invalid UTF8 string")?);
+		let glob = dir.join("**").join("*");
 
-		Tera::new(&glob)?
+		Tera::new(glob.to_str().context("invalid UTF8 string")?)?
 	} else {
 		Tera::default()
 	};
