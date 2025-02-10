@@ -55,7 +55,8 @@ fn main() -> Result<()> {
 	trace!("context:\n{:#?}", context);
 
 	let mut tera = if include {
-		let dir = if path.is_file() { path.parent().context("failed to get parent directory")?.to_path_buf() } else { path };
+		let dir =
+			if path.is_file() { path.parent().context("failed to get parent directory")?.to_path_buf() } else { path };
 
 		let glob = dir.join("**").join("*");
 
