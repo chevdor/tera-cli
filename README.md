@@ -193,7 +193,7 @@ Passing the `-a | --escape` flag allows escaping the content.
     Usage: tera [OPTIONS] --template <TEMPLATE> [CONTEXT]
 
     Arguments:
-      [CONTEXT]  Location of the context data. This file can be of the following type: json | toml | yaml. If you prefer to pass the data as stdin, use `--stdin`
+      [CONTEXT]  Location of the context data. This file can be of the following type: json | toml | yaml. If you prefer to pass the data as stdin, use `--stdin`. On stdin, .env files are also supported.
 
     Options:
       -t, --template <TEMPLATE>          Location of the template
