@@ -1,17 +1,18 @@
 class Tera < Formula
-  desc 'A command line utility written in Rust to render templates using the Tera templating engine'
-  homepage 'https://github.com/chevdor/tera-cli'
-  version '0.5.0'
+  desc "A command line utility written in Rust to render templates using the tera templating engine"
+  homepage "https://github.com/chevdor/tera-cli"
+  version "0.5.1"
 
   if Hardware::CPU.arm?
-    url 'https://github.com/chevdor/tera-cli/releases/download/v0.5.0/tera-cli-aarch64-apple-darwin.tar.gz'
-    sha256 'cde318afb9b41c7e4a0cfa7041b3355b49f33c4ebbe96e966017dc6eb93afaf4'
+    url 'https://github.com/chevdor/tera-cli/releases/download/v0.5.1/tera-cli-aarch64-apple-darwin.tar.gz'
+    sha256 '0731db549b9a2f982d105812e7f81b36aaa1799494b1208419c650be3527f950'
   else
-    url 'https://github.com/chevdor/tera-cli/releases/download/v0.5.0/tera-cli-x86_64-apple-darwin.tar.gz'
-    sha256 '5da9dae6b48ed395804fb804a7a7f2901a6e10d620d40bf7ae67ed4abadbcb29'
+    url 'https://github.com/chevdor/tera-cli/releases/download/v0.5.1/tera-cli-x86_64-apple-darwin.tar.gz'
+    sha256 '13e9bbc28308217af1b430c1222563405057f9e2db1d1efe4c75a1d52c84df82'
   end
 
   def install
-    bin.install 'tera'
+    bin.install "tera"
   end
 end
+
