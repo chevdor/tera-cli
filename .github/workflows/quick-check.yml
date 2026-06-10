@@ -16,7 +16,7 @@ jobs:
   quick_check-format:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: dtolnay/rust-toolchain@stable
         with:
@@ -28,7 +28,7 @@ jobs:
   quick_check-clippy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: dtolnay/rust-toolchain@stable
         with:
@@ -46,7 +46,7 @@ jobs:
           - '--all-features'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: dtolnay/rust-toolchain@stable
 
@@ -65,7 +65,7 @@ jobs:
       - name: Cache Nix dependencies
         uses: DeterminateSystems/magic-nix-cache-action@v2
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Check flake
         run: nix flake check
