@@ -1,7 +1,7 @@
 {
   description = "A command line utility written in Rust to render templates from json|toml|yaml && ENV, using the tera templating engine";
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
     naersk.url = "github:nix-community/naersk";
     naersk.inputs.nixpkgs.follows = "nixpkgs";
   };

@@ -16,40 +16,26 @@ jobs:
   quick_check-format:
     runs-on: ubuntu-latest
     steps:
-      - name: Install Rust stable toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
-          components: rustfmt
-
       - uses: actions/checkout@v4
 
-      - name: Cargo fmt
-        uses: actions-rs/cargo@v1
+      - uses: dtolnay/rust-toolchain@stable
         with:
-          command: fmt
-          args: --all -- --check
+          components: rustfmt
+
+      - name: Cargo fmt
+        run: cargo fmt --all -- --check
 
   quick_check-clippy:
     runs-on: ubuntu-latest
     steps:
-      - name: Install Rust stable toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
-          components: clippy
-
       - uses: actions/checkout@v4
 
-      - name: Cargo clippy
-        uses: actions-rs/cargo@v1
+      - uses: dtolnay/rust-toolchain@stable
         with:
-          command: clippy
-          args: --all-features -- -D warnings
+          components: clippy
+
+      - name: Cargo clippy
+        run: cargo clippy --all-features -- -D warnings
 
   quick_check-tests:
     strategy:
@@ -60,26 +46,15 @@ jobs:
           - '--all-features'
     runs-on: ubuntu-latest
     steps:
-      - name: Install Rust stable toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
-
       - uses: actions/checkout@v4
 
+      - uses: dtolnay/rust-toolchain@stable
+
       - name: Cargo test
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: ${{ matrix.feature-flags }}
+        run: cargo test ${{ matrix.feature-flags }}
 
       - name: Cargo check
-        uses: actions-rs/cargo@v1
-        with:
-          command: check
-          args: ${{ matrix.feature-flags }}
+        run: cargo check ${{ matrix.feature-flags }}
 
   quick_check-flake:
     runs-on: ubuntu-latest

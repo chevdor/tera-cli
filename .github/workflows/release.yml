@@ -12,18 +12,14 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - name: Install latest nightly
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: nightly
-          override: true
-          components: rustfmt, clippy
       - uses: actions/checkout@v4
-      - name: Install cargo deb
-        uses: actions-rs/cargo@v1
+
+      - uses: dtolnay/rust-toolchain@nightly
         with:
-          command: install
-          args: cargo-deb
+          components: rustfmt, clippy
+
+      - name: Install cargo deb
+        run: cargo install cargo-deb
 
       - name: Build debian package
         shell: bash
