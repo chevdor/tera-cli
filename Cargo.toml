@@ -5,7 +5,7 @@ edition = "2021"
 license = "MIT"
 name = "teracli"
 readme = "README.md"
-version = "0.5.0"
+version = "0.5.1"
 
 [features]
 default = []
