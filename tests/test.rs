@@ -66,6 +66,29 @@ mod cli_tests {
 	}
 
 	#[cfg(test)]
+	mod include {
+		use assert_cmd::Command;
+		use predicates::prelude::*;
+
+		#[test]
+		fn it_ignores_hidden_files() {
+			let mut cmd = Command::cargo_bin("tera").unwrap();
+			let assert = cmd
+				.arg("--template")
+				.arg("data/include/hello.txt")
+				.arg("--include-path")
+				.arg("data/include")
+				.arg("--env-only")
+				.env("USER", "Tester")
+				.assert();
+			assert
+				.success()
+				.stdout(predicate::str::contains("Hello Tester"))
+				.stdout(predicate::str::contains("This is the world template"));
+		}
+	}
+
+	#[cfg(test)]
 	mod stdin {
 		use std::fs;
 
