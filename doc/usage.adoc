@@ -7,8 +7,9 @@ Arguments:
 
 Options:
   -t, --template <TEMPLATE>          Location of the template
-  -i, --include                      This flag tells the command to parse all templates found in the same path where the given template is located [aliases: inherit]
-      --include-path <INCLUDE_PATH>  Option to define a different path from which search and parse templates [aliases: inherit-path]
+  -i, --include                      This flag tells the command to parse all templates found in the same path where the given template is located [aliases: --inherit]
+      --include-path <INCLUDE_PATH>  Option to define a different path from which search and parse templates [aliases: --inherit-path]
+      --include-hidden               By default, hidden files and directories (with a name starting with a dot, e.g. `.DS_Store` or `.git`) found in the include path are not parsed as templates. Pass this flag to parse them as well
   -s, --stdin                        The context data can be passed using stdin
   -e, --env                          If true, the current ENV will be appended to the data under the --env-key key
       --env-key <ENV_KEY>            By default, if --env is set, the environment variables will be attached at the root of the context. This is convenient but may end up conflicting with your data. To prevent collisions, you can provide a custom key with this option

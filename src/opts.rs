@@ -19,6 +19,12 @@ pub struct Opts {
 	#[clap(long, visible_alias = "inherit-path")]
 	pub include_path: Option<PathBuf>,
 
+	/// By default, hidden files and directories (with a name starting with a dot,
+	/// e.g. `.DS_Store` or `.git`) found in the include path are not parsed as templates.
+	/// Pass this flag to parse them as well.
+	#[clap(long)]
+	pub include_hidden: bool,
+
 	/// Option to set default locale used for Fluent localization functions.
 	#[cfg(feature = "fluent")]
 	#[clap(short, long)]

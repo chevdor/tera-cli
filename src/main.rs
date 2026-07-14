@@ -13,6 +13,7 @@ use log::{debug, info, trace};
 use opts::*;
 use std::{fs::canonicalize, fs::File, io::Write};
 use tera::{Context, Tera};
+use walkdir::WalkDir;
 
 #[cfg(feature = "fluent")]
 use fluent_templates::{ArcLoader, FluentLoader, LanguageIdentifier};
@@ -34,6 +35,7 @@ fn main() -> Result<()> {
 
 	let autoescape = opts.autoescape;
 	let output = opts.out.clone();
+	let include_hidden = opts.include_hidden;
 	let mut include = opts.include;
 	let mut path = canonicalize(&opts.template).context("failed to get absolute path to `template`")?;
 
@@ -58,10 +60,30 @@ fn main() -> Result<()> {
 		let dir =
 			if path.is_file() { path.parent().context("failed to get parent directory")?.to_path_buf() } else { path };
 
-		// Ignore hidden files such as .DS_Store.
-		let glob = dir.join("**").join("[!.]*");
+		// Unless --include-hidden is passed, skip hidden files and directories
+		// such as .DS_Store or .git, they are usually not templates.
+		let walker = WalkDir::new(&dir).into_iter().filter_entry(|entry| {
+			include_hidden || entry.depth() == 0 || !entry.file_name().to_string_lossy().starts_with('.')
+		});
 
-		Tera::new(glob.to_str().context("invalid UTF8 string")?)?
+		let mut files = Vec::new();
+		for entry in walker {
+			let entry = entry.context("failed to scan the include path")?;
+			if !entry.file_type().is_file() {
+				continue;
+			}
+			let name = entry
+				.path()
+				.strip_prefix(&dir)
+				.context("failed to strip the include path prefix")?
+				.to_string_lossy()
+				.into_owned();
+			files.push((entry.path().to_path_buf(), Some(name)));
+		}
+
+		let mut tera = Tera::default();
+		tera.add_template_files(files)?;
+		tera
 	} else {
 		Tera::default()
 	};

@@ -63,19 +63,19 @@ and a call such as `tera --template template.tera data.json` will produce:
 
 The **tera** engine allows way more than the simple replacements shown above. You may check out the [doc](https://tera.netlify.app/docs) for more information. To name only a few, **tera** offers the following:
 
--   variables & expressions (you can do math…​)
+- variables & expressions (you can do math…​)
 
--   comments
+- comments
 
--   control structure & loops (if, for, …​)
+- control structure & loops (if, for, …​)
 
--   filters
+- filters
 
--   formatting functions (show a file size, format a date, etc…​)
+- formatting functions (show a file size, format a date, etc…​)
 
--   inheritance, include, etc…​
+- inheritance, include, etc…​
 
--   built-ins: capitalize strings, replace, trim, etc…​
+- built-ins: capitalize strings, replace, trim, etc…​
 
 ## Install
 
@@ -108,11 +108,11 @@ The Docker image mentioned above is not yet built by the CI so you may not find 
 
 ### Execute `tera` from the Docker container
 
-**Check the tera help**
+Check the tera help
 
     docker run -it --rm tera-cli --help
 
-**Parse a template**
+Parse a template
 
     docker run -it --rm \
         --volume="$(pwd)/templates:/templates" \
@@ -124,13 +124,13 @@ The Docker image mentioned above is not yet built by the CI so you may not find 
 
 Well…​ if you have **data** and you want to format them, this tool will likely be a great companion.
 
--   You may generate beautiful changelogs in markdown, asciidoc, restructured text, etc…​
+- You may generate beautiful changelogs in markdown, asciidoc, restructured text, etc…​
 
--   You may generate some more human views of your data
+- You may generate some more human views of your data
 
--   You may…​ make a blog with that…​
+- You may…​ make a blog with that…​
 
--   You may generate k8s config files…​.
+- You may generate k8s config files…​.
 
 ## Features
 
@@ -174,6 +174,8 @@ While the syntax is a little more verbose, paired with `--fail-on-collision`, th
 
 Using the `--include` flag, the command will scan recursively for files that could be [included](https://tera.netlify.app/docs/#include), used as [macros](https://tera.netlify.app/docs/#macros) or for [inheritance](https://tera.netlify.app/docs/#inheritance). By default, it will scan the folder where the main template is located, unless the `--include-path` option is given.
 
+Hidden files and directories (with a name starting with a dot, such as `.DS_Store` or `.git`) are skipped during that scan since they are usually not templates. If your templates do live in hidden files or folders, pass the `--include-hidden` flag to parse them as well.
+
 From this repository, you can test the **include** feature with the command:
 
     USER="[YOURNAME]" tera --template data/include/hello.txt --include --env-only
@@ -197,8 +199,9 @@ Passing the `-a | --escape` flag allows escaping the content.
 
     Options:
       -t, --template <TEMPLATE>          Location of the template
-      -i, --include                      This flag tells the command to parse all templates found in the same path where the given template is located [aliases: inherit]
-          --include-path <INCLUDE_PATH>  Option to define a different path from which search and parse templates [aliases: inherit-path]
+      -i, --include                      This flag tells the command to parse all templates found in the same path where the given template is located [aliases: --inherit]
+          --include-path <INCLUDE_PATH>  Option to define a different path from which search and parse templates [aliases: --inherit-path]
+          --include-hidden               By default, hidden files and directories (with a name starting with a dot, e.g. `.DS_Store` or `.git`) found in the include path are not parsed as templates. Pass this flag to parse them as well
       -s, --stdin                        The context data can be passed using stdin
       -e, --env                          If true, the current ENV will be appended to the data under the --env-key key
           --env-key <ENV_KEY>            By default, if --env is set, the environment variables will be attached at the root of the context. This is convenient but may end up conflicting with your data. To prevent collisions, you can provide a custom key with this option

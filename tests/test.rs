@@ -69,15 +69,30 @@ mod cli_tests {
 	mod include {
 		use assert_cmd::Command;
 		use predicates::prelude::*;
+		use std::fs;
+		use tempfile::TempDir;
+
+		/// Build an include dir containing valid templates plus hidden junk:
+		/// an invalid `.DS_Store` file and an invalid template in a hidden folder.
+		fn include_dir_with_hidden_junk() -> TempDir {
+			let dir = tempfile::tempdir().unwrap();
+			fs::copy("data/include/hello.txt", dir.path().join("hello.txt")).unwrap();
+			fs::copy("data/include/world.txt", dir.path().join("world.txt")).unwrap();
+			fs::write(dir.path().join(".DS_Store"), "{% invalid %}").unwrap();
+			fs::create_dir(dir.path().join(".hidden")).unwrap();
+			fs::write(dir.path().join(".hidden").join("junk.txt"), "{% invalid %}").unwrap();
+			dir
+		}
 
 		#[test]
-		fn it_ignores_hidden_files() {
+		fn it_ignores_hidden_files_by_default() {
+			let dir = include_dir_with_hidden_junk();
 			let mut cmd = Command::cargo_bin("tera").unwrap();
 			let assert = cmd
 				.arg("--template")
-				.arg("data/include/hello.txt")
+				.arg(dir.path().join("hello.txt"))
 				.arg("--include-path")
-				.arg("data/include")
+				.arg(dir.path())
 				.arg("--env-only")
 				.env("USER", "Tester")
 				.assert();
@@ -85,6 +100,23 @@ mod cli_tests {
 				.success()
 				.stdout(predicate::str::contains("Hello Tester"))
 				.stdout(predicate::str::contains("This is the world template"));
+		}
+
+		#[test]
+		fn it_parses_hidden_files_with_include_hidden() {
+			let dir = include_dir_with_hidden_junk();
+			let mut cmd = Command::cargo_bin("tera").unwrap();
+			let assert = cmd
+				.arg("--template")
+				.arg(dir.path().join("hello.txt"))
+				.arg("--include-path")
+				.arg(dir.path())
+				.arg("--include-hidden")
+				.arg("--env-only")
+				.env("USER", "Tester")
+				.assert();
+			// The invalid hidden templates are now parsed and must trigger an error.
+			assert.failure().code(1);
 		}
 	}
 
