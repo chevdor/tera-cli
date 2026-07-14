@@ -58,7 +58,8 @@ fn main() -> Result<()> {
 		let dir =
 			if path.is_file() { path.parent().context("failed to get parent directory")?.to_path_buf() } else { path };
 
-		let glob = dir.join("**").join("*");
+		// Ignore hidden files such as .DS_Store.
+		let glob = dir.join("**").join("[!.]*");
 
 		Tera::new(glob.to_str().context("invalid UTF8 string")?)?
 	} else {
