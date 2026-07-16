@@ -1,0 +1,71 @@
+# Reusable "publish pages" workflow — the same file for EVERY repo.
+#
+# Copy this to `.gitea/workflows/publish-pages.yml` in any repo you want served
+# by git-pages, then put your static site under a top-level `pages/` folder
+# (subfolders become URL paths, e.g. pages/user_doc/ -> /<repo>/user_doc/).
+#
+# On every push to master that touches pages/, it mirrors the CONTENT of pages/
+# onto the root of the repo's `pages` branch, then tells git-pages to redeploy
+#   https://chevdor.k8s.chevdor.cc/<repo>/
+# The deploy step POSTs a push-event payload; git-pages authorizes it by
+# matching the clone URL against its [[wildcard]] template (no token needed).
+# NOTE: the PUT REST API is NOT used on purpose — wildcard auth only covers
+# webhook-style POSTs (src/auth.go: "Wildcard match is only available for
+# webhooks, not the REST API").
+name: Publish pages
+
+on:
+  push:
+    branches: [main, master] # whichever is the repo's default branch
+    paths:
+      - "pages/**"
+  workflow_dispatch: {}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Mirror pages/ -> pages branch
+        run: |
+          set -euo pipefail
+          if [ ! -d pages ]; then
+            echo "No pages/ directory; nothing to publish."
+            exit 0
+          fi
+          git config user.name  "gitea-actions"
+          git config user.email "gitea-actions@chevdor.cc"
+
+          # Stage pages/ content in a temp dir, then rebuild an orphan branch
+          # whose ROOT is that content (git-pages serves the branch root).
+          tmp="$(mktemp -d)"
+          cp -a pages/. "$tmp"/
+          touch "$tmp/.nojekyll"   # plain static site, no Jekyll processing
+
+          git checkout --orphan pages-publish
+          git reset --hard
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -a "$tmp"/. .
+
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to publish."
+            exit 0
+          fi
+          git commit -m "Publish pages from ${GITHUB_SHA:0:8}"
+          # checkout@v4 persists the repo credentials, so this push is authenticated.
+          git push -f origin pages-publish:pages
+
+      - name: Deploy to git-pages
+        run: |
+          set -euo pipefail
+          repo="${GITHUB_REPOSITORY#*/}"
+          curl -sf -X POST "https://chevdor.k8s.chevdor.cc/${repo}/" \
+            -H "Content-Type: application/json" \
+            -H "X-GitHub-Event: push" \
+            --data "{\"ref\":\"refs/heads/pages\",\"repository\":{\"clone_url\":\"https://gitea.k8s.chevdor.cc/${GITHUB_REPOSITORY}.git\"}}"
+          echo
+          echo "deployed https://chevdor.k8s.chevdor.cc/${repo}/"
