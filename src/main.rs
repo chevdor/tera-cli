@@ -93,7 +93,7 @@ fn main() -> Result<()> {
 	};
 
 	#[cfg(feature = "fluent")]
-	if cfg!(feature = "fluent") {
+	{
 		let builder =
 			ArcLoader::builder(&locales_path, locale.clone()).customize(|bundle| bundle.set_use_isolating(false));
 		if let Ok(locale_loader) = builder.build() {
